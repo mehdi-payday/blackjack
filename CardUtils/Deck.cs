@@ -54,7 +54,7 @@ namespace AppJeuCartes
             cards[c1] = cards[c2];
             cards[c2] = buffer;
             
-
+             
         }
         
         
