@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppJeuCartes
 {
-    public class Deck
-    {
+    public class Deck : IEnumerable<Card> {
         private List<Card> cards;
         private Random r;
 
@@ -45,7 +45,7 @@ namespace AppJeuCartes
         }
 
         public void Shuffle() {
-            cards = cards.OrderBy(carte => r.Next()).ToList<Card>();
+            cards = cards.OrderBy(Card => r.Next()).ToList<Card>();
 
         }
 
@@ -56,8 +56,33 @@ namespace AppJeuCartes
             
              
         }
-        
-        
+        public void Ajouter(Card Card) {
+            this.cards.Add(Card);
+        }
+        public static Deck operator +(Deck deckA, Deck deckB) {
+            deckA.Ajouter(deckB);
+            return deckA;
+        }
+        public static Deck operator +(Deck deckA, Card card) {
+            deckA.Ajouter(card);
+            return deckA;
+        }
+        public void Ajouter(Deck deck) {
+            List<Card> Cards = new List<Card>(deck.cards);
+            foreach (Card c in Cards) {
+                this.cards.Add(c);
+            }
+        }
 
+        public IEnumerator<Card> GetEnumerator() {
+            for (int i = 0; i < this.cards.Count; i++) {
+                yield return this.cards[i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
+            
+        }
     }
 }
