@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppJeuCartes
+namespace CardUtils
 {
     public class Deck : IEnumerable<Card> {
         private List<Card> cards;
@@ -13,11 +13,19 @@ namespace AppJeuCartes
 
         public Deck() {
             r = new Random();
-            loadCards();
+            this.generateCards();
         }
 
-        private void loadCards() {
+        public static Deck generateDeck() {
+            Deck deck = new Deck();
+            deck.generateCards();
+            return deck;
+        }
+
+        private void generateCards() {
             cards = new List<Card>();
+            this.cards.Clear();
+
             for (int i = 0; i < 13; i++) {
                 cards.Add( new Card( (i + 1), Card.Suits.SPADE) );
                 cards.Add( new Card( (i + 1), Card.Suits.CLUBS ) );
