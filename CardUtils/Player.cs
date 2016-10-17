@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CardUtils {
-    class PlayerException : Exception {
+    public class PlayerException : Exception {
         public PlayerException(string m) : base(m) {
         }
         public PlayerException(string m, Exception cause) : base(m,cause) {
 
         }
     }
-    class CannotBetException : Exception {
+    public class CannotBetException : Exception {
         public CannotBetException(string m ) : base(m){
 
         }
@@ -22,7 +22,7 @@ namespace CardUtils {
 
     }
     
-    class Player {
+    public class Player {
         public uint ID {
             get;
             private set;

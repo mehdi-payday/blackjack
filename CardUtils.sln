@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardUtils", "CardUtils\Card
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerClient", "ServerClient\ServerClient.csproj", "{E6CDBBC7-0DB9-4882-9ECC-6B5429665F8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testForServer", "testForServer\testForServer.csproj", "{06AFD7BD-141D-40E8-88C8-2CF670F55F56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E6CDBBC7-0DB9-4882-9ECC-6B5429665F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6CDBBC7-0DB9-4882-9ECC-6B5429665F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6CDBBC7-0DB9-4882-9ECC-6B5429665F8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06AFD7BD-141D-40E8-88C8-2CF670F55F56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06AFD7BD-141D-40E8-88C8-2CF670F55F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06AFD7BD-141D-40E8-88C8-2CF670F55F56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06AFD7BD-141D-40E8-88C8-2CF670F55F56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

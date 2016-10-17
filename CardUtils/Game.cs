@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CardUtils {
-    class GameException : Exception {
+    public class GameException : Exception {
         public GameException(String m) : base(m) {
             
         }
@@ -14,7 +14,7 @@ namespace CardUtils {
         }
     }
     
-    class Game {
+    public class Game {
         private Deck deck = new Deck();
 
         public Stack<Player> WaitingTurn = new Stack<Player>();
