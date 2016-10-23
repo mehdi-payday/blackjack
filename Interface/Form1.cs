@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-
+using System.Collections;
 namespace Interface
 {
     public partial class Form1 : Form
@@ -8,19 +8,27 @@ namespace Interface
         public Form1()
         {
             InitializeComponent();
-            AddCardsPlayer2(4);
-            AddCardsPlayer3(4);
-        }
-
-        private void btmHitMe_Click(object sender, EventArgs e)
-        {
             
             
         }
 
-        private void btnStand_Click(object sender, EventArgs e)
-        {
+        public void BtnHitMe_Click(object sender, EventArgs e) {
+            CardUtils.Deck hand  = new CardUtils.Deck();
+            CardUtils.Card card1 = new CardUtils.Card(2, CardUtils.Card.Suits.SPADES);
+            CardUtils.Card card2 = new CardUtils.Card(2, CardUtils.Card.Suits.HEARTS);
+            hand.Add(card1);
+            hand.Add(card2);
+            this.ShowPlayer1Cards(hand);
+            this.ShowPlayer2Cards(hand,true);
+            this.ShowPlayer3Cards(hand);
+            //CardUtils.Player player1 = new CardUtils.Player("mehdi", 1);
+            //player1.assignCard(card1);
+            //player1.assignCard(card2);
 
+        }
+
+        public void BtnStand_Click(object sender, EventArgs e) {
+            this.btnHitMe.Enabled = false;
         }
     }
 }

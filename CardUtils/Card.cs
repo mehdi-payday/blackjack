@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace CardUtils {
     public class Card : IComparable<Card> {
         public enum Suits{
-            SPADE,
-            HEARTH,
-            DIAMOND,
+            SPADES,
+            HEARTS,
+            DIAMONDS,
             CLUBS
 
         }
@@ -26,7 +26,7 @@ namespace CardUtils {
                 return number;
             }
             private set {
-                this.Number = validateNumero(value);
+                number = validateNumero(value);
             }
         }
         public Suits Suit {
@@ -67,6 +67,33 @@ namespace CardUtils {
             }
             numCard = this.Number.ToString();
             numCard = numCard + ", " + this.Suit.ToString();
+            return numCard;
+        }
+        public string ImagePath()
+        {
+            string numCard = "_";
+            if (this.Number > 10 || this.Number == 1)
+            {
+                switch (this.Number)
+                {
+                    case 1:
+                        numCard = "ace";
+                        break;
+                    case 11:
+                        numCard = "jack";
+                        break;
+                    case 12:
+                        numCard = "queen";
+                        break;
+                    case 13:
+                        numCard = "king";
+                        break;
+                }
+            }
+            else {
+                numCard = this.Number +"";
+            }
+            numCard = "_" + numCard + "_of_" + this.Suit.ToString().ToLower();
             return numCard;
         }
         public string ShortName {

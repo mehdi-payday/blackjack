@@ -27,10 +27,10 @@ namespace CardUtils
             this.cards.Clear();
 
             for (int i = 0; i < 13; i++) {
-                cards.Add( new Card( (i + 1), Card.Suits.SPADE) );
+                cards.Add( new Card( (i + 1), Card.Suits.SPADES) );
                 cards.Add( new Card( (i + 1), Card.Suits.CLUBS ) );
-                cards.Add( new Card( (i + 1), Card.Suits.HEARTH ) );
-                cards.Add( new Card( (i + 1), Card.Suits.DIAMOND ) );
+                cards.Add( new Card( (i + 1), Card.Suits.HEARTS ) );
+                cards.Add( new Card( (i + 1), Card.Suits.DIAMONDS ) );
             }
         }
 
@@ -81,7 +81,9 @@ namespace CardUtils
                 this.cards.Add(c);
             }
         }
-
+        public List<Card> getCards() {
+            return this.cards;
+        }
         public IEnumerator<Card> GetEnumerator() {
             for (int i = 0; i < this.cards.Count; i++) {
                 yield return this.cards[i];
