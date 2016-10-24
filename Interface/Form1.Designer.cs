@@ -359,7 +359,7 @@ namespace Interface
                 } );
 
             
-            for (int i = 0; i < playerCards.Count; i++) {
+            for (int i = 0; i < playerCards?.Count; i++) {
                 if (i == 4) { row = 142; cardNb = 0; }
                 string cardImage = playerCards[i].ImagePath();
                 System.Windows.Forms.PictureBox aCard = new System.Windows.Forms.PictureBox();
