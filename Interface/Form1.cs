@@ -51,15 +51,15 @@ namespace Interface
 
         public void RefreshView() {
             //try {
-                //List<CardUtils.Player> other_players = this.client.Game.Players;
-                List<CardUtils.Player> other_players = new List<CardUtils.Player>();
+            //List<CardUtils.Player> other_players = this.client.Game.Players;
+            List<CardUtils.Player> other_players = new List<CardUtils.Player>();
 
-                foreach (CardUtils.Player p in this.client.Game.Players) {
-                    other_players.Add(p);
-                }
+            foreach (CardUtils.Player p in this.client.Game.Players) {
+                other_players.Add(p);
+            }
 
-                CardUtils.Player actualPlayer = this.client.Game.FindPlayer( this.client.playerID );
-                other_players.Remove( actualPlayer );
+            CardUtils.Player actualPlayer = this.client.Game.FindPlayer( this.client.playerID );
+            other_players.Remove( actualPlayer );
 
             CardUtils.Player player1 = actualPlayer;
             CardUtils.Player player2 = null, player3 = null;

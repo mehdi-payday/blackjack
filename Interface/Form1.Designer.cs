@@ -321,7 +321,7 @@ namespace Interface
         public void ShowPlayerCards(
             CardUtils.Player player,
             System.Windows.Forms.Panel playerPanel,
-            bool isPlaying,
+            bool isPlaying = false,
             System.Windows.Forms.RadioButton playingRadio=null,
             System.Windows.Forms.RadioButton standingRadio=null,
             bool gameFinished = false) {
@@ -332,11 +332,13 @@ namespace Interface
             int cardNb = 0; // when the number of cards is 4 we reset to 0 so we can start the new row
             this.Player1Panel.Controls.Clear();
 
-            playingRadio.Checked = isPlaying;
-            standingRadio.Checked = !isPlaying;
+            if (playingRadio != null)
+                playingRadio.Checked = isPlaying;
+            if(standingRadio != null)
+                standingRadio.Checked = !isPlaying;
             
 
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < playerCards.Count; i++) {
                 if (i == 4) { row = 142; cardNb = 0; }
                 string cardImage = playerCards[i].ImagePath();
                 System.Windows.Forms.PictureBox aCard = new System.Windows.Forms.PictureBox();
