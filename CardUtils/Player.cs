@@ -54,7 +54,7 @@ namespace CardUtils {
 
         public void Bet(float amount) {
             if(this.Bourse < amount) {
-                throw new CannotBetException("Player '"+this.ToString() +"' cannot bet " + amount + " because his bursary is only of " + this.Bourse);
+                throw new CannotBetException("Player '" + this.ToString() + "' cannot bet " + amount + " because his bursary is only of " + this.Bourse);
             }
             this.Bourse -= amount;
             this.BetAmount += amount;

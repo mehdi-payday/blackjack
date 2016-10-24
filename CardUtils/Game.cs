@@ -21,7 +21,7 @@ namespace CardUtils {
             get;
             set;
         }
-        public Stack<Player> WaitingTurn = new Stack<Player>();
+        //public Stack<Player> WaitingTurn = new Stack<Player>();
         public List<Player> Players = new List<Player>();
 
         /*
@@ -159,11 +159,24 @@ namespace CardUtils {
             if(this.PlayingPlayerIndex != playerId) {
                 throw new GameException("Cannot pass player whose id is " + playerId + ", because he's not the actual playing player.");
             }
-            this.PlayingPlayer = this.WaitingTurn.Pop();
             
+            int index = this.Players.FindIndex((p) => p.ID == this.PlayingPlayerIndex);
+            if(index == this.Players.Count - 1) {
+                // Last Player. Game finished.
+                this.Finished = true;
+            } else {
+                // Give turn to the next player
+                index++;
+                this.PlayingPlayer = this.Players[index];
+            }
+            
+            //this.PlayingPlayer = this.WaitingTurn.Pop();
         }
 
         public void Pass(Player player) {
+            if(!this.isPlaying(player)) {
+                throw new GameException("Cannot make player " + player.ToString() + " pass because it is not his turn to play");
+            }
             this.Pass(player.ID);
         }
 
