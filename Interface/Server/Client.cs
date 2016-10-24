@@ -54,7 +54,7 @@ namespace ServerClient.Client {
         #endregion
 
         public static void Main() {
-            new Client();
+            new Client(null);
         }
 
 
@@ -225,25 +225,31 @@ namespace ServerClient.Client {
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_BETS:
                     this.Game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd );
+                    ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_CONNECTED:
                     CardUtils.Player pla = (CardUtils.Player)NETMSG.bytesToObj( msg.Payload );
                     Console.WriteLine( "new player!: " + pla.ID );
                     Game.AddPlayer( pla );
+                    ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_DISCONNECTED:
                     uint id = (uint)NETMSG.bytesToObj( msg.Payload );
                     this.Game.Disconnect( id );
+                    ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
                     this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
                     this.Game.Pass( (uint)NETMSG.bytesToObj( msg.Payload ) );
+                    ui.RefreshView();
                     break;
 
                 case NETMSG.MSG_TYPES.END_GAME:
                     //say who won
+                    ui.RefreshView();
                     break;
 
                 default:
