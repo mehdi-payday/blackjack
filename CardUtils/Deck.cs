@@ -14,7 +14,7 @@ namespace CardUtils
 
         public Deck() {
             r = new Random();
-            this.generateCards();
+            //this.generateCards();
         }
 
         public static Deck generateDeck() {
