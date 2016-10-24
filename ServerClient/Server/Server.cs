@@ -14,17 +14,20 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace ServerClient.Server {
     public class Server {
         private Socket listener;
-        private List<TcpClient> clients;
+        private Dictionary<TcpClient, List<NETMSG>> clients;
 
         private CardUtils.Game game;
 
+        #region contructors
         public Server() {
-            clients = new List<TcpClient>();
+            this.game = new CardUtils.Game();
+            clients = new Dictionary<TcpClient, List<NETMSG>>();
         }
 
         public Server(CardUtils.Game game ):this() {
             SetGame( game );
         }
+        #endregion
 
 
 
@@ -40,40 +43,27 @@ namespace ServerClient.Server {
             try {
                 l.Start();
                 Console.WriteLine( "SERVER LISTENING" );
+                List<Thread> threads = new List<Thread>();
 
 
-                while (true) {
+                int i = 0;
+                while (i < 3) {
+                    //TODO, move clients to new THREADs
                     TcpClient client = l.AcceptTcpClient();
-                    BufferedStream ns = new BufferedStream(client.GetStream());
-                    BinaryFormatter bf = new BinaryFormatter();
+                    Console.WriteLine( "accepted" );
+                    //thread or no thread
+                    Thread clientThread = new Thread( () => handleNewClient( client ) );
+                    threads.Add( clientThread );
 
-                    //innitial sync
-                    bf.Serialize(ns, new NETMSG( NETMSG.MSG_TYPES.SERVER_OK, null, "welcome") );
-                    NETMSG r = (NETMSG)bf.Deserialize( ns );
-
-                    if(NETMSG.MSG_TYPES.CLIENT_OK.Equals(r.Type)) {
-                        //client will request game
-                        r = (NETMSG)bf.Deserialize( ns );
-                        if (NETMSG.MSG_TYPES.CLIENT_REQUEST_SYNC.Equals( r.Type )) {
-                            //send it to client
-                            bf.Serialize( ns, new NETMSG( NETMSG.MSG_TYPES.SERVER_GAME, this.game ) );
-
-                            if (NETMSG.MSG_TYPES.CLIENT_READY.Equals( bf.Deserialize( ns ) ) ){
-                                //CLIENT IS READY TO PLAY
-
-                            }
-
-                        }
-                    }
-
-                        
-
-                    
-
-                    client.Close();
-                    break;
+                    clientThread.Start();
+                    i++;
 
                 }
+                Console.WriteLine( "ded" );
+                Thread.Sleep( 1000 );
+                Console.WriteLine( "sending disconnect" );
+                FullBroadCast( new NETMSG( NETMSG.MSG_TYPES.SERVER_CLOSING, null ) );
+                Thread.Sleep( 5000 );
                 listener.Close();
 
             } catch (SocketException ex) {
@@ -85,15 +75,211 @@ namespace ServerClient.Server {
         }
 
 
+        private void handleNewClient(TcpClient client) {
+            try {
+                Console.WriteLine( "new client!" );
+                clients.Add( client, new List<NETMSG>() );
+                BufferedStream ns = new BufferedStream( client.GetStream() );
+                BinaryFormatter bf = new BinaryFormatter();
+
+                //innitial sync
+                SendClient(client, new NETMSG( NETMSG.MSG_TYPES.SERVER_OK, null, "welcome" ) );
+                NETMSG r = ReceiveClient(client);
+
+                if (NETMSG.MSG_TYPES.CLIENT_OK.Equals( r.Type )) {
+                    //client will request game
+                    r = ReceiveClient( client );
+                    if (NETMSG.MSG_TYPES.CLIENT_REQUEST_SYNC.Equals( r.Type )) {
+                        //send it to client
+                        SendClient( client, new NETMSG( NETMSG.MSG_TYPES.SERVER_GAME, objToBytes( this.game )) );
+
+                        NETMSG m = ReceiveClient( client );
+                        ProcessClientMessage( client, m);
+
+                        if (NETMSG.MSG_TYPES.CLIENT_READY.Equals( ReceiveClient(client).Type )) {
+                            //handleClient
+                            handleClientMainLoop( client );
+
+                        }
+
+                    }
+                }
+
+            } catch (Exception e) {
+                Console.WriteLine( e.Message + "\n" + e.StackTrace );
+            }
+
+        }
+
+        private void handleClientMainLoop(TcpClient client) {
+            NETMSG defaultMSG = new NETMSG( NETMSG.MSG_TYPES.SERVER_OK, null );
+            NETMSG toSend;
+            Console.WriteLine( "entering main loop for client " + client );
+
+            while (client.Connected && clients.ContainsKey(client)) {
+                NETMSG m = ReceiveClient( client );
+                ProcessClientMessage( client, m );
+
+                if (clients.ContainsKey( client )) {
+                    if (clients[client].Count > 0) {
+                        //send to client then remove from queue
+                        toSend = clients[client][0];
+                        //Console.WriteLine( "TOSEND:" + toSend.Type.ToString());
+                        SendClient( client, toSend );
+                        clients[client].RemoveAt( 0 );
+                    } else {
+                        SendClient( client, defaultMSG );
+                    }
+                }else {
+                    break;
+                }
+            }
+
+
+        }
+
+
+        #region SOCKET IO
+        public void SendClient(TcpClient client, NETMSG msg ) {
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream mem = new MemoryStream();
+            //Console.WriteLine( "SENDING" );
+
+            bf.Serialize( mem, msg );//ns
+            byte[] b = mem.ToArray();
+            byte[] len = BitConverter.GetBytes(b.Length);
+            client.GetStream().Write( len, 0, 4 );
+            client.GetStream().Write(b, 0, b.Length);
+
+        }
+
+        public NETMSG ReceiveClient(TcpClient client) {
+            BinaryFormatter Bf = new BinaryFormatter();
+            try {
+                int br = 0; ;
+                byte[] b = new byte[256];
+                MemoryStream mem = new MemoryStream();
+                int len;
+                byte[] lenb = new byte[4];
+
+                //read length (client always sends length first as 4bytes)
+                client.GetStream().Read( lenb, 0, 4 );
+                len = BitConverter.ToInt32( lenb, 0 );
+
+                int toread = len;
+                int read = 0;
+
+                do {
+                    if (toread < 256) {
+                        br = client.GetStream().Read( b, 0, toread );
+                    } else {
+                        br = client.GetStream().Read( b, 0, 256 );
+                    }
+                    mem.Write( b, 0, br );
+                    read += br;
+
+                } while (br == 256);
+
+                mem.Position = 0;
+                NETMSG msg = (NETMSG)Bf.Deserialize( mem );
+                //Console.WriteLine( "server received: " + msg.Type.ToString() );
+                return msg;
+
+            } catch(Exception e) {
+                return new NETMSG( NETMSG.MSG_TYPES.CLIENT_ERROR, objToBytes( e ), e.Message );
+            }
+        }
+
+        public void FullBroadCast(NETMSG msg) {
+            foreach(TcpClient client in clients.Keys) {
+                clients[client].Add( msg );
+                //SendClient( client, msg );
+            }
+        }
+
+        public void BroadCastExceptForClient(TcpClient client, NETMSG msg) {
+            foreach (TcpClient c in clients.Keys) {
+                if(c != client) {
+                    clients[client].Add(msg);
+                    //SendClient( c, msg );
+                }
+            }
+            Console.WriteLine( "partial bc done" );
+        }
+        #endregion
+
+
+        //todo
+        /*
+         * trouver facon de synchronizer les threads clients avec les broadcasts
+         * - pt faire un queue pour chaque client, broadcast ajoute au queue de chacun
+         * - 
+         * 
+         */
+        public void ProcessClientMessage(TcpClient client,NETMSG msg) {
+            switch (msg.Type) {
+                case NETMSG.MSG_TYPES.CLIENT_REQUEST_SYNC:
+                    SendClient( client, new NETMSG( NETMSG.MSG_TYPES.SERVER_GAME, objToBytes( this.game ) ) );
+                    break;
+                case NETMSG.MSG_TYPES.CLIENT_DISCONNECT:
+                    this.clients.Remove( client );
+                    Console.WriteLine( "client disconnected" );
+                    game.Disconnect( (uint)NETMSG.bytesToObj(msg.Payload));
+                    FullBroadCast( new NETMSG(NETMSG.MSG_TYPES.PLAYER_DISCONNECTED, msg.Payload ) );
+                    break;
+                case NETMSG.MSG_TYPES.CLIENT_OK:
+                    //for sync purposes
+                    break;
+                case NETMSG.MSG_TYPES.CLIENT_READY:
+                    //for sync purposes
+                    break;
+                case NETMSG.MSG_TYPES.CLIENT_REQUEST_UID:
+                    Console.WriteLine( "/" );
+                    CardUtils.Player p = game.createPlayer();
+                    game.AddPlayer( p );
+                    SendClient( client, new NETMSG(NETMSG.MSG_TYPES.SERVER_PLAYER_UID, objToBytes( p ) ) );
+                    FullBroadCast( new NETMSG( NETMSG.MSG_TYPES.PLAYER_CONNECTED, objToBytes( p ) ) );
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_PASS:
+                    game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    BroadCastExceptForClient( client, msg );
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_PICKS:
+                    game.PickCard( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    BroadCastExceptForClient( client, msg );
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_BETS:
+                    game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd);
+                    BroadCastExceptForClient( client, msg );
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+
+
         public void SetGame(CardUtils.Game game ) {
             this.game = game;
         }
+
+
+        private byte[] objToBytes( Object o ) {
+            if (o != null) {
+                MemoryStream mem = new MemoryStream();
+                (new BinaryFormatter()).Serialize( mem, o );
+                return mem.ToArray();
+            }
+            return null;
+        }
+
     }
 
 
 
-
-
+    #region utils structs
     [Serializable]
     public struct NETMSG {
         public enum MSG_TYPES {
@@ -109,14 +295,17 @@ namespace ServerClient.Server {
             CLIENT_REQUEST_SYNC,//when connecting, transfers the Game object to the new client
             CLIENT_READY,       //client is connected and ready
             CLIENT_DISCONNECT,  //client will disconnect
-            CLIENT_OK,       //initial message
+            CLIENT_OK,          //initial message
+            CLIENT_ERROR,       //client error
+            CLIENT_REQUEST_UID, //client wants to be assigned a player
 
             //SERVER UPDATES
             SERVER_FULL,        //when client tries to connect and server is full
             SERVER_CLOSING,     //when the server closes, broadcast this to connected clients
             SERVER_ERROR,       //for debug purposes
             SERVER_GAME,        //contains the Game object, forces the client to update its game to the server's. sent in response to CLIENT_REQUEST_SYNC or in specific cases
-            SERVER_OK,       //initial message
+            SERVER_OK,          //initial message
+            SERVER_PLAYER_UID,  //when the server creates a player for a client, this is sent to the client with the uid
 
             /*SERVER_ACCEPT,      //sent when server accepts action
             SERVER_DENY,        //sent when server denies action*/
@@ -125,13 +314,31 @@ namespace ServerClient.Server {
         }
         public MSG_TYPES Type;
         public string Message;
-        public Object Payload;
+        public byte[] Payload;
 
-        public NETMSG( MSG_TYPES type,Object payload, string message = "void"  ) {
+        public NETMSG( MSG_TYPES type, byte[] payload, string message = "void"  ) {
             this.Message = message;
             this.Type = type;
             this.Payload = payload;
+            
+        }
+
+        public static Object bytesToObj( byte[] b ) {
+            MemoryStream mem = new MemoryStream( b );
+            return (new BinaryFormatter()).Deserialize( mem );
         }
 
     }
+
+    [Serializable]
+    public struct BET {
+        public uint PlayerID;
+        public float betTOAdd;
+
+        public BET(uint p, float b ) {
+            this.PlayerID = p;
+            this.betTOAdd = b;
+        }
+    }
+    #endregion
 }

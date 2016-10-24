@@ -22,6 +22,7 @@ namespace CardUtils {
 
     }
     
+    [Serializable]
     public class Player {
         public uint ID {
             get;

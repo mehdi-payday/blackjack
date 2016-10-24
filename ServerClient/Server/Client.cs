@@ -7,63 +7,261 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using ServerClient.Server;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace ServerClient.Client {
     public class Client {
         private IPAddress serverAddress = IPAddress.Parse( "127.0.0.1" );
         private int serverPort = 25565;
         private IPEndPoint serverEndPoint;
+        private BufferedStream networkStream;
+        private TcpClient socket;
+        private NETMSG toSend;
+        private bool exitRequested;
+        private uint playerID;
 
-        private BinaryFormatter binaryformatter;
+        public BinaryFormatter Bf;
+        public CardUtils.Game Game;
+        public Thread MainLoopThread;
+        public List<NETMSG> sendStack;
 
-        public Client() {
-            
+        
+        public bool ExitRequested{
+            get {
+                return this.exitRequested;
+            }
+            set {
+                exitRequested = value;
+                if (value == true) {
+                    handleExitRequest();
+                }
+            }
+        }
+
+
+        #region contructors
+        public Client() {    
             serverEndPoint = new IPEndPoint( serverAddress, serverPort );
-            binaryformatter = new BinaryFormatter();
+            Bf = new BinaryFormatter();
+            exitRequested = false;
+            sendStack = new List<NETMSG>();
 
         }
+        #endregion
 
         public static void Main() {
             new Client();
         }
 
+
         public void Start() {
             Console.WriteLine( "CLIENT START" );
-            //Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
-            TcpClient socket = new TcpClient();
+            socket = new TcpClient();
+
             try {
-
                 socket.Connect( serverEndPoint );
-                byte[] bytes = new byte[256];
-                BufferedStream ns = new BufferedStream(socket.GetStream());
-                StreamWriter outs = new StreamWriter( ns );
-                StreamReader ins = new StreamReader( ns );
-
-                for (int i =0; i < 3; i++) {
-
-                    Server.NETMSG n = (Server.NETMSG)binaryformatter.Deserialize( ns );
-                    Console.WriteLine( "SERVER SAYS >> " + n.id + ": " + n.Message );
+                Thread.Sleep( 100 );
+                this.networkStream = new BufferedStream( socket.GetStream() );
+                NETMSG n = receive();//= (Server.NETMSG)Bf.Deserialize( networkStream );
 
 
+                if (NETMSG.MSG_TYPES.SERVER_OK.Equals( n.Type )) {
+                    send( new NETMSG( NETMSG.MSG_TYPES.CLIENT_OK, null ) );
 
-                    n = (Server.NETMSG)binaryformatter.Deserialize( ns );
-                    Console.WriteLine( "SERVER SAYS 2>> " + n.id + ": " + n.Message );
+                    //get game
+                    send( new NETMSG( NETMSG.MSG_TYPES.CLIENT_REQUEST_SYNC, null ) );
+                    NETMSG g = receive();
+                    processServerMessage( g );
 
-                    outs.WriteLine( "hello!" );
-                    outs.Flush();
+                    send( new NETMSG( NETMSG.MSG_TYPES.CLIENT_REQUEST_UID, null ) );
+
+                    //given player uid
+                    NETMSG uid_msg = receive();
+                    processServerMessage( uid_msg );
+                    Console.WriteLine( "You are player #" + playerID );
+
+
+                    if (this.Game != null) {
+
+                        send( new NETMSG( NETMSG.MSG_TYPES.CLIENT_READY, null ) );
+
+                        //ready to play
+                        //thread not to freeze UI
+                        MainLoopThread = new Thread( () => this.MainLoop(/*this*/) );
+
+                        MainLoopThread.Start();
+
+                    }
 
                 }
 
-
-
             } catch (Exception e) {
                 Console.WriteLine( "ERROR >> " + e.Message );
+                Console.WriteLine( e.StackTrace );
+                ExitRequested = true;
             }
 
-            //socket.Shutdown( SocketShutdown.Both );
-            socket.Close();
+            
         }
 
+
+        //MAIN LOGIC
+        public void MainLoop(/*Client c*/) {
+            Console.WriteLine( "CLIENT " + this + " entered MainLoop" );
+
+            while (!this.exitRequested && socket.Connected) {
+                //client sends first
+                if (sendStack.Count() > 0) {
+                    toSend = sendStack[0];
+                    sendStack.RemoveAt(0);
+
+                }else {
+                    toSend = new NETMSG( NETMSG.MSG_TYPES.CLIENT_OK, null );
+                }
+                send( toSend );
+                NETMSG m = receive();
+                processServerMessage(m);
+                Thread.Sleep( 10 );
+                /*int i=0;
+                foreach (CardUtils.Player pl in this.Game.Players) {
+                    Console.WriteLine( "player " + i + ": " + pl.ID );
+                    i++;
+                }*/
+            }
+
+        }
+
+        private void handleExitRequest() {
+            send( new NETMSG( NETMSG.MSG_TYPES.CLIENT_DISCONNECT, objToBytes(playerID) ) );
+            socket.Close();
+
+        }
+
+        #region socket io
+        private void send( NETMSG msg ) {
+            MemoryStream mem = new MemoryStream();
+
+            Bf.Serialize( mem, msg );//ns
+            byte[] b = mem.ToArray();
+            byte[] len = BitConverter.GetBytes( b.Length );
+            socket.GetStream().Write( len, 0, 4 );
+            socket.GetStream().Write( b, 0, b.Length );
+
+        }
+
+        private NETMSG receive() {
+            try {
+                int br = 0; ;
+                byte[] b = new byte[256];
+                MemoryStream mem = new MemoryStream();
+                int len;
+                byte[] lenb = new byte[4];
+
+                //read length (server always sends length first as 4bytes)
+                socket.GetStream().Read( lenb, 0, 4 );
+                len = BitConverter.ToInt32( lenb, 0 );
+
+                int toread = len;
+                int read = 0;
+
+                do {
+                    if (toread < 256) {
+                        br = socket.GetStream().Read( b, 0, toread );
+                    } else {
+                        br = socket.GetStream().Read( b, 0, 256 );
+                    }
+                    mem.Write( b, 0, br );
+                    read += br;
+
+                } while (br == 256);
+
+                mem.Position = 0;
+                NETMSG msg = (Server.NETMSG)Bf.Deserialize( mem );
+                //Console.WriteLine( "CLient received: " + msg.Type.ToString() );
+
+                return msg;
+
+            } catch(Exception e) {
+                Console.WriteLine( "Exception while receiving: " + e.Message + " at " + e.StackTrace);
+                return new NETMSG( NETMSG.MSG_TYPES.SERVER_ERROR, objToBytes( e ), e.Message);
+
+            }
+
+        }
+
+        private void receiveAndHandle() {
+            processServerMessage( receive() );
+        }
+        #endregion
+
+       
+        private void processServerMessage(NETMSG msg ) {
+            switch (msg.Type) {
+                case NETMSG.MSG_TYPES.SERVER_OK:
+                    //this is a sync message
+                    break;
+                case NETMSG.MSG_TYPES.SERVER_GAME:
+                    this.Game = (CardUtils.Game)NETMSG.bytesToObj( msg.Payload );
+
+                    break;
+                case NETMSG.MSG_TYPES.SERVER_FULL:
+                    MessageBox.Show( "The server is full. Closing connection." );
+                    ExitRequested = true;
+                    break;
+                case NETMSG.MSG_TYPES.SERVER_ERROR:
+                    MessageBox.Show( "SERVER_ERROR received from Server: \n" + msg.Message + "." );
+                    break;
+                case NETMSG.MSG_TYPES.SERVER_CLOSING:
+                    MessageBox.Show( "The server will close or you were kicked.  Disconnecting from server." );
+                    ExitRequested = true;
+                    break;
+                case NETMSG.MSG_TYPES.SERVER_PLAYER_UID:
+                    this.playerID = ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID;
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_BETS:
+                    this.Game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd );
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_CONNECTED:
+                    CardUtils.Player pla = (CardUtils.Player)NETMSG.bytesToObj( msg.Payload );
+                    Console.WriteLine( "new player!: " + pla.ID );
+                    Game.AddPlayer( pla );
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_DISCONNECTED:
+                    uint id = (uint)NETMSG.bytesToObj( msg.Payload );
+                    this.Game.Disconnect( id );
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_PASS:
+                    this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    break;
+                case NETMSG.MSG_TYPES.PLAYER_PICKS:
+                    this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    break;
+
+                case NETMSG.MSG_TYPES.END_GAME:
+                    //say who won
+                    break;
+
+                default:
+                    MessageBox.Show( "Unknown NETMSG struct object received" );
+                    break;
+
+            }
+
+
+
+        }
+
+
+        private byte[] objToBytes( Object o ) {
+            if (o != null) {
+                MemoryStream mem = new MemoryStream();
+                (new BinaryFormatter()).Serialize( mem, o );
+                return mem.ToArray();
+            }
+            return null;
+        }
 
     }
 }

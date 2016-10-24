@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CardUtils
 {
+    [Serializable]
     public class Deck : IEnumerable<Card> {
         private List<Card> cards;
         private Random r;

@@ -14,6 +14,7 @@ namespace CardUtils {
         }
     }
     
+    [Serializable]
     public class Game {
         private Deck deck = new Deck();
 
@@ -59,7 +60,7 @@ namespace CardUtils {
         public void Lock() {
             this.Locked = true;
         }
-        private void AddPlayer(Player p) {
+        public void AddPlayer(Player p) {
             if(!this.Locked) {
                 this.Players.Add(p);
             } else {
