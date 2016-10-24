@@ -240,7 +240,7 @@ namespace ServerClient.Server {
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
                     game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
-                    BroadCastExceptForClient( client, msg );
+                    FullBroadCast( msg );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
                     Console.WriteLine("player picked: "+ (uint) NETMSG.bytesToObj(msg.Payload));
