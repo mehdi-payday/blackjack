@@ -23,7 +23,7 @@ namespace Interface
             this.game.AddPlayer(this.player1);
             this.game.AddPlayer(this.player2);
             this.game.AddPlayer(this.player3);*/
-            client = new ServerClient.Client.Client();
+            client = new ServerClient.Client.Client(this);
             client.Start();
             
 

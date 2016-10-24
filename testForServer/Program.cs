@@ -16,13 +16,13 @@ namespace testForServer {
 
             try {
                 ServerClient.Server.Server server = new ServerClient.Server.Server();
-                ServerClient.Client.Client client = new ServerClient.Client.Client(),
+                /*ServerClient.Client.Client client = new ServerClient.Client.Client(),
                     client2 = new ServerClient.Client.Client();
-
+                    */
                 Thread tServer = new Thread( server.Start );
-                Thread tClient = new Thread( client.Start );
+                /*Thread tClient = new Thread( client.Start );
                 Thread tClient2 = new Thread( client2.Start );
-
+                */
 
                 tServer.Start();
                 Thread.Sleep( 100 );

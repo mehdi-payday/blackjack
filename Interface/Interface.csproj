@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="binaryFormatter.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,6 +56,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -285,10 +288,6 @@
     <ProjectReference Include="..\CardUtils\CardUtils.csproj">
       <Project>{ddd6bae3-8056-43f3-bb3d-88ada9965413}</Project>
       <Name>CardUtils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServerClient\ServerClient.csproj">
-      <Project>{e6cdbbc7-0db9-4882-9ecc-6b5429665f8f}</Project>
-      <Name>ServerClient</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

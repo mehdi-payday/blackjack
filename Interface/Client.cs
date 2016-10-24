@@ -54,7 +54,7 @@ namespace ServerClient.Client {
         #endregion
 
         public static void Main() {
-            new Client();
+            new Client(null);
         }
 
 
