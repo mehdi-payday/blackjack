@@ -17,10 +17,11 @@ namespace CardUtils {
     [Serializable]
     public class Game {
         private Deck deck = new Deck();
-        public bool Finished {
+        public bool Finished
+        {
             get;
             set;
-        }
+        } = false;
         //public Stack<Player> WaitingTurn = new Stack<Player>();
         public List<Player> Players = new List<Player>();
 

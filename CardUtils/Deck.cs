@@ -9,7 +9,7 @@ namespace CardUtils
 {
     [Serializable]
     public class Deck : IEnumerable<Card> {
-        private List<Card> cards;
+        private List<Card> cards = new List<Card>();
         private Random r;
 
         public Deck() {
