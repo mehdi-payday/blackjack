@@ -50,9 +50,10 @@ namespace Interface
         }
 
         public void RefreshView() {
-            List<CardUtils.Player> other_players = this.client.Game.Players;
-            CardUtils.Player actualPlayer = this.client.Game.FindPlayer(this.client.playerID);
-            other_players.Remove(actualPlayer);
+            try {
+                List<CardUtils.Player> other_players = this.client.Game.Players;
+                CardUtils.Player actualPlayer = this.client.Game.FindPlayer( this.client.playerID );
+                other_players.Remove( actualPlayer );
 
             CardUtils.Player player1 = actualPlayer;
             CardUtils.Player player2 = null, player3 = null;²
