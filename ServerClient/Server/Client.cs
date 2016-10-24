@@ -266,8 +266,16 @@ namespace ServerClient.Client {
 
 
         public void HitMe() {
-            AddToSendQueue( new NETMSG( NETMSG.MSG_TYPES.PLAYER_PICKS, objToBytes( playerID ) ) );
+            AddToSendQueue( new NETMSG( NETMSG.MSG_TYPES.PLAYER_PICKS, objToBytes(playerID) ) );
         }
-
+        public void Stand() {
+            AddToSendQueue(new NETMSG(NETMSG.MSG_TYPES.PLAYER_PASS, objToBytes(playerID)));
+        }
+        public void Bet(float amount) {
+            BET b = BET();
+            b.PlayerID = this.playerID;
+            b.betTOAdd = amount;
+            AddToSendQueue(new NETMSG(NETMSG.MSG_TYPES.PLAYER_PASS, objToBytes(b)));
+        }
     }
 }

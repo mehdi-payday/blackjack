@@ -45,6 +45,7 @@ namespace CardUtils {
 
         public Player(String name, uint ID) {
             this.ID = ID;
+            this.Hand = new Deck();
         }
 
         public void assignCard(Card card) {
