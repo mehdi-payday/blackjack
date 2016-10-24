@@ -2,8 +2,23 @@
 using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+
 namespace Interface
 {
+    public class Handler {
+        public Form1 f;
+        public List<Action> a = new List<Action>();
+
+        public void ExecNext() {
+            if(a.Count > 0) {
+                a[0].Invoke();
+                a.RemoveAt( 0 );
+            }
+            
+        }
+    }
+
     public partial class Form1 : Form
     {
         //private CardUtils.Game game;
@@ -11,10 +26,14 @@ namespace Interface
          private CardUtils.Player player2;
          private CardUtils.Player player3;*/
         ServerClient.Client.Client client;
+        private Handler h;
 
         public Form1()
         {
-            InitializeComponent();
+
+            //InitializeComponent();
+            CreateHandle();
+          
             //this.game = new CardUtils.Game();
             /*
             this.player1 = new CardUtils.Player("Jeremy", this.game.generatePlayerId());
@@ -25,9 +44,18 @@ namespace Interface
             this.game.AddPlayer(this.player2);
             this.game.AddPlayer(this.player3);*/
             client = new ServerClient.Client.Client(this);
+            client.RefreshUI = new Action( ()=> {
+                this.Invoke( (MethodInvoker)delegate {
+                    this.RefreshView();
+                } );
+            } );
             client.Start();
             
 
+        }
+
+        public void init() {
+            InitializeComponent();
         }
 
         public void BtnHitMe_Click(object sender, EventArgs e) {

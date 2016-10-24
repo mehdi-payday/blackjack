@@ -95,8 +95,9 @@ namespace CardUtils {
         }
         public Player FindPlayer(uint playerId) {
             Player p = this.Players.Find((Player candidate) => candidate.ID == playerId);
+            Console.WriteLine("-----"+ p?.ID);
             if(p == null) {
-                throw new GameException("Player whose id is '"+playerId+"' is not part of the game.");
+                //throw new GameException("Player whose id is '"+playerId+"' is not part of the game.");
             }
             return p;
         }

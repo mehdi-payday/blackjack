@@ -27,7 +27,7 @@ namespace ServerClient.Client {
         public Thread MainLoopThread;
         public List<NETMSG> sendStack;
         public uint playerID;
-
+        public Action RefreshUI;
 
         public bool ExitRequested{
             get {
@@ -92,7 +92,7 @@ namespace ServerClient.Client {
                         //thread not to freeze UI
                         MainLoopThread = new Thread( () => this.MainLoop(/*this*/) );
 
-
+                        ui.init();
                         MainLoopThread.Start();
 
                     }
@@ -224,7 +224,8 @@ namespace ServerClient.Client {
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_BETS:
                     this.Game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd );
-                    ui.RefreshView();
+                    //ui.RefreshView();
+                    RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_CONNECTED:
                     CardUtils.Player pla = (CardUtils.Player)NETMSG.bytesToObj( msg.Payload );
@@ -238,30 +239,36 @@ namespace ServerClient.Client {
                         Console.WriteLine("player playing is "+ pla.ID);
                         Game.PlayingPlayer = Game.Players[0];
                     }
-                    ui.RefreshView();
+                    //ui.RefreshView();
+                    RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_DISCONNECTED:
                     uint id = (uint)NETMSG.bytesToObj( msg.Payload );
                     this.Game.Disconnect( id );
-                    ui.RefreshView();
+                    //ui.RefreshView();
+                    RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
                     this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
-                    ui.RefreshView();
+                    //ui.RefreshView();
+                    RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
                     this.Game.PickCard( (uint)NETMSG.bytesToObj( msg.Payload ) );
-                    ui.RefreshView();
+                    //ui.RefreshView();
+                    RefreshUI();
                     break;
 
                 case NETMSG.MSG_TYPES.END_GAME:
                     //say who won
-                    ui.RefreshView();
+                    //ui.RefreshView();
+                    RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_YOURTURN:
                     //this.Game.PlayingPlayer = this.Game.FindPlayer( playerID );
 
-                    ui.RefreshView();
+                    //ui.RefreshView();
+                    RefreshUI();
                     break;
                 default:
                     MessageBox.Show( "Unknown NETMSG struct object received" );

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Interface
 {
@@ -315,7 +317,9 @@ namespace Interface
             float pot = game.Pot;
             bool finished = game.Finished;
 
-            this.currentPot.Text = "" + pot;
+            //this.currentPot.Text = "" + pot;
+            currentPot.Invoke( (MethodInvoker)delegate { currentPot.Text = ""+pot; } );
+
         }
 
         public void ShowPlayerCards(
@@ -330,14 +334,21 @@ namespace Interface
             int spacing = 5;
             int row = 11;
             int cardNb = 0; // when the number of cards is 4 we reset to 0 so we can start the new row
-            this.Player1Panel.Controls.Clear();
+//            playerPanel.Controls.Clear();
+            playerPanel.Invoke( (MethodInvoker)delegate {
+                playerPanel.Controls.Clear();
+            } );
+
 
             if (playingRadio != null)
                 playingRadio.Checked = isPlaying;
-            if(standingRadio != null)
+            if (standingRadio != null)
+                standingRadio.Invoke( (MethodInvoker)delegate {
+                    
+                } );
                 standingRadio.Checked = !isPlaying;
-            
 
+            
             for (int i = 0; i < playerCards.Count; i++) {
                 if (i == 4) { row = 142; cardNb = 0; }
                 string cardImage = playerCards[i].ImagePath();
@@ -349,8 +360,12 @@ namespace Interface
                     cardImage = "_back";
                 }
                 aCard.Image = (System.Drawing.Image)global::Interface.Properties.Resources.ResourceManager.GetObject(cardImage + "");
-                System.Windows.Forms.MessageBox.Show(cardImage);
-                playerPanel.Controls.Add(aCard);
+
+                //called from client thread, causing error
+                
+                playerPanel.Invoke(( MethodInvoker ) delegate { playerPanel.Controls.Add( aCard ); });
+
+
                 cardNb++;
 
             }
