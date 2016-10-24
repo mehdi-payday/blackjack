@@ -92,7 +92,8 @@ namespace Interface
         }
 
         public void BtnStand_Click(object sender, EventArgs e) {
-            this.btnHitMe.Enabled = false;
+            client.Stand();
+            //this.btnHitMe.Enabled = false;
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e) {
