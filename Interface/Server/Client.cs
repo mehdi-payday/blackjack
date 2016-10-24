@@ -249,7 +249,7 @@ namespace ServerClient.Client {
                     RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
-                    this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    this.Game.Pass( (uint)NETMSG.bytesToObj( msg.Payload ) );
                     //ui.RefreshView();
                     RefreshUI();
                     break;
