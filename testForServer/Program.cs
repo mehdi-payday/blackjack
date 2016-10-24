@@ -29,9 +29,9 @@ namespace testForServer {
 
                 
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
-                Thread.Sleep( 10 );
+                Thread.Sleep( 100 );
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
-                Thread.Sleep( 10 );
+                Thread.Sleep( 100 );
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
 
 

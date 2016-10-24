@@ -332,12 +332,12 @@ namespace Interface
         }
 
         public void ShowPlayerCards(
-            CardUtils.Player player,
-            System.Windows.Forms.Panel playerPanel,
-            bool isPlaying = false,
-            System.Windows.Forms.RadioButton playingRadio=null,
-            System.Windows.Forms.RadioButton standingRadio=null,
-            bool gameFinished = false) {
+                CardUtils.Player player,
+                System.Windows.Forms.Panel playerPanel,
+                bool isPlaying = false,
+                System.Windows.Forms.RadioButton playingRadio=null,
+                System.Windows.Forms.RadioButton standingRadio=null,
+                bool gameFinished = false) {
             List<CardUtils.Card> playerCards = player.Hand.getCards();
             int width = 65;
             int spacing = 5;
@@ -359,7 +359,7 @@ namespace Interface
                 } );
 
             
-            for (int i = 0; i < playerCards?.Count; i++) {
+            for (int i = 0; i < playerCards.Count; i++) {
                 if (i == 4) { row = 142; cardNb = 0; }
                 string cardImage = playerCards[i].ImagePath();
                 System.Windows.Forms.PictureBox aCard = new System.Windows.Forms.PictureBox();
