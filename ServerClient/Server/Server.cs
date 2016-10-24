@@ -237,9 +237,9 @@ namespace ServerClient.Server {
                     BroadCastExceptForClient( client, msg );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
-                    Console.WriteLine( "player picked" );
+                    Console.WriteLine( "player picked: "+ (uint)NETMSG.bytesToObj( msg.Payload ) );
 
-                    game.PickCard( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    game.PickCard( (uint)NETMSG.bytesToObj( msg.Payload ) );
                     BroadCastExceptForClient( client, msg );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_BETS:

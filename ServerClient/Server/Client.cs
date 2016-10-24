@@ -266,7 +266,7 @@ namespace ServerClient.Client {
 
 
         public void HitMe() {
-            AddToSendQueue( new NETMSG( NETMSG.MSG_TYPES.PLAYER_PICKS, playerID ) );
+            AddToSendQueue( new NETMSG( NETMSG.MSG_TYPES.PLAYER_PICKS, objToBytes( playerID ) ) );
         }
 
     }

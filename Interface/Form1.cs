@@ -14,13 +14,14 @@ namespace Interface
         {
             InitializeComponent();
             client = new ServerClient.Client.Client();
-            clientThread = new Thread( client.Start );
-            Thread.Sleep( 100 );
-            clientThread.Start();
+            client.Start();
             
+
         }
 
         public void BtnHitMe_Click(object sender, EventArgs e) {
+
+            client.HitMe();
 
             CardUtils.Deck hand  = new CardUtils.Deck();
             CardUtils.Card card1 = new CardUtils.Card(2, CardUtils.Card.Suits.SPADES);
