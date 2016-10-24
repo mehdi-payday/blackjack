@@ -230,7 +230,12 @@ namespace ServerClient.Client {
                     CardUtils.Player pla = (CardUtils.Player)NETMSG.bytesToObj( msg.Payload );
                     Console.WriteLine( "new player!: " + pla.ID );
                     Game.AddPlayer( pla );
+                    Console.WriteLine( "total count:" + Game.Players.Count );
+                    foreach(CardUtils.Player p in Game.Players) {
+                        Console.WriteLine( "PL: " + p.ID );
+                    }
                     if (Game.Players.Count == 1) {
+                        Console.WriteLine("player playing is "+ pla.ID);
                         Game.PlayingPlayer = Game.Players[0];
                     }
                     ui.RefreshView();
@@ -245,7 +250,7 @@ namespace ServerClient.Client {
                     ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
-                    this.Game.Pass( (uint)NETMSG.bytesToObj( msg.Payload ) );
+                    this.Game.PickCard( (uint)NETMSG.bytesToObj( msg.Payload ) );
                     ui.RefreshView();
                     break;
 
