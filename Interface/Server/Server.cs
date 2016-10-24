@@ -47,7 +47,7 @@ namespace ServerClient.Server {
 
 
                 int i = 0;
-                while (i < 3) {
+                while (i < 4) {
                     //TODO, move clients to new THREADs
                     TcpClient client = l.AcceptTcpClient();
                     Console.WriteLine( "accepted" );
@@ -56,6 +56,7 @@ namespace ServerClient.Server {
                     threads.Add( clientThread );
 
                     clientThread.Start();
+                    
                     i++;
 
                 }
@@ -229,8 +230,12 @@ namespace ServerClient.Server {
                 case NETMSG.MSG_TYPES.CLIENT_REQUEST_UID:
                     CardUtils.Player p = game.createPlayer();
                     game.AddPlayer( p );
+                    if(game.Players.Count == 1) {
+                        game.PlayingPlayer = game.Players[0];
+                    }
                     SendClient( client, new NETMSG(NETMSG.MSG_TYPES.SERVER_PLAYER_UID, objToBytes( p ) ) );
                     FullBroadCast( new NETMSG( NETMSG.MSG_TYPES.PLAYER_CONNECTED, objToBytes( p ) ) );
+
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
                     game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
@@ -240,7 +245,7 @@ namespace ServerClient.Server {
                     Console.WriteLine( "player picked: "+ (uint)NETMSG.bytesToObj( msg.Payload ) );
 
                     game.PickCard( (uint)NETMSG.bytesToObj( msg.Payload ) );
-                    BroadCastExceptForClient( client, msg );
+                    FullBroadCast(msg );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_BETS:
                     game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd);
@@ -284,6 +289,7 @@ namespace ServerClient.Server {
             PLAYER_CONNECTED,   //when broadcasting to clients that a new player has connected
             PLAYER_DISCONNECTED,//when a player disconnects mid-game
             END_GAME,           //broadcasting that the game is over, contains info on the winner
+            PLAYER_YOURTURN,
 
             //CLIENT UPDATES
             CLIENT_REQUEST_SYNC,//when connecting, transfers the Game object to the new client

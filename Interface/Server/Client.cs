@@ -20,16 +20,15 @@ namespace ServerClient.Client {
         private TcpClient socket;
         private NETMSG toSend;
         private bool exitRequested;
-        private uint playerID;
         private Interface.Form1 ui;
 
         public BinaryFormatter Bf;
         public CardUtils.Game Game;
         public Thread MainLoopThread;
         public List<NETMSG> sendStack;
+        public uint playerID;
 
 
-        
         public bool ExitRequested{
             get {
                 return this.exitRequested;
@@ -231,6 +230,9 @@ namespace ServerClient.Client {
                     CardUtils.Player pla = (CardUtils.Player)NETMSG.bytesToObj( msg.Payload );
                     Console.WriteLine( "new player!: " + pla.ID );
                     Game.AddPlayer( pla );
+                    if (Game.Players.Count == 1) {
+                        Game.PlayingPlayer = Game.Players[0];
+                    }
                     ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_DISCONNECTED:
@@ -251,7 +253,11 @@ namespace ServerClient.Client {
                     //say who won
                     ui.RefreshView();
                     break;
+                case NETMSG.MSG_TYPES.PLAYER_YOURTURN:
+                    //this.Game.PlayingPlayer = this.Game.FindPlayer( playerID );
 
+                    ui.RefreshView();
+                    break;
                 default:
                     MessageBox.Show( "Unknown NETMSG struct object received" );
                     break;

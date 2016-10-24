@@ -26,11 +26,18 @@ namespace testForServer {
 
                 tServer.Start();
                 Thread.Sleep( 100 );
-                Console.WriteLine( "server..." );
-                Interface.Form1 ui1 = new Interface.Form1();
-                Application.Run(ui1);
 
-                
+                Interface.Form1 ui1 = new Interface.Form1();
+                Thread.Sleep( 10 );
+                Interface.Form1 ui2 = new Interface.Form1();
+                Thread.Sleep( 10 );
+                Interface.Form1 ui3 = new Interface.Form1();
+                new Thread( () => Application.Run( ui1 ) ).Start();
+                new Thread( () => Application.Run( ui2 ) ).Start();
+                new Thread( () => Application.Run( ui3 ) ).Start();
+
+
+
                 /*tClient.Start();
                 Thread.Sleep( 1000 );
                 tClient2.Start();
