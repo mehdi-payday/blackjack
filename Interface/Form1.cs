@@ -6,15 +6,16 @@ namespace Interface
     public partial class Form1 : Form
     {
         private CardUtils.Game game;
-       /* private CardUtils.Player player1;
-        private CardUtils.Player player2;
-        private CardUtils.Player player3;*/
+        /* private CardUtils.Player player1;
+         private CardUtils.Player player2;
+         private CardUtils.Player player3;*/
+        ServerClient.Client.Client client;
 
         public Form1()
         {
             InitializeComponent();
             this.game = new CardUtils.Game();
-
+            /*
             this.player1 = new CardUtils.Player("Jeremy", this.game.generatePlayerId());
             this.player2 = new CardUtils.Player("Mehdi", this.game.generatePlayerId());
             this.player3 = new CardUtils.Player("Adam", this.game.generatePlayerId());
