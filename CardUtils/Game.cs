@@ -76,7 +76,7 @@ namespace CardUtils {
         }
 
         public bool isPlaying(Player p) {
-            return p.ID == this.PlayingPlayer.ID;
+            return p.ID == this.PlayingPlayerIndex;
         }
 
         public void TurnChange(Player p) {
