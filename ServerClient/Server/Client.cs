@@ -272,7 +272,7 @@ namespace ServerClient.Client {
             AddToSendQueue(new NETMSG(NETMSG.MSG_TYPES.PLAYER_PASS, objToBytes(playerID)));
         }
         public void Bet(float amount) {
-            BET b = BET();
+            BET b = new ServerClient.Server.BET();
             b.PlayerID = this.playerID;
             b.betTOAdd = amount;
             AddToSendQueue(new NETMSG(NETMSG.MSG_TYPES.PLAYER_PASS, objToBytes(b)));
