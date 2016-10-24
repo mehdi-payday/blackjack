@@ -21,11 +21,14 @@ namespace ServerClient.Client {
         private NETMSG toSend;
         private bool exitRequested;
         private uint playerID;
+        private Thread uiThread;
 
         public BinaryFormatter Bf;
         public CardUtils.Game Game;
         public Thread MainLoopThread;
         public List<NETMSG> sendStack;
+        public Interface.Form1 Ui;
+
 
         
         public bool ExitRequested{
@@ -47,7 +50,7 @@ namespace ServerClient.Client {
             Bf = new BinaryFormatter();
             exitRequested = false;
             sendStack = new List<NETMSG>();
-
+            Ui = new Interface.Form1();
         }
         #endregion
 
@@ -91,6 +94,12 @@ namespace ServerClient.Client {
                         //thread not to freeze UI
                         MainLoopThread = new Thread( () => this.MainLoop(/*this*/) );
 
+                        //start ui
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault( false );
+                        Application.Run( Ui );
+
+
                         MainLoopThread.Start();
 
                     }
@@ -124,11 +133,7 @@ namespace ServerClient.Client {
                 NETMSG m = receive();
                 processServerMessage(m);
                 Thread.Sleep( 10 );
-                /*int i=0;
-                foreach (CardUtils.Player pl in this.Game.Players) {
-                    Console.WriteLine( "player " + i + ": " + pl.ID );
-                    i++;
-                }*/
+                
             }
 
         }
@@ -193,6 +198,10 @@ namespace ServerClient.Client {
 
         private void receiveAndHandle() {
             processServerMessage( receive() );
+        }
+
+        public void AddToSendQueue(NETMSG msg ) {
+            this.sendStack.Add( msg );
         }
         #endregion
 

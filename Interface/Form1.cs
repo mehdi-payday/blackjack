@@ -13,6 +13,8 @@ namespace Interface
         }
 
         public void BtnHitMe_Click(object sender, EventArgs e) {
+
+
             CardUtils.Deck hand  = new CardUtils.Deck();
             CardUtils.Card card1 = new CardUtils.Card(2, CardUtils.Card.Suits.SPADES);
             CardUtils.Card card2 = new CardUtils.Card(2, CardUtils.Card.Suits.HEARTS);

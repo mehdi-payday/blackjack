@@ -209,13 +209,6 @@ namespace ServerClient.Server {
         #endregion
 
 
-        //todo
-        /*
-         * trouver facon de synchronizer les threads clients avec les broadcasts
-         * - pt faire un queue pour chaque client, broadcast ajoute au queue de chacun
-         * - 
-         * 
-         */
         public void ProcessClientMessage(TcpClient client,NETMSG msg) {
             switch (msg.Type) {
                 case NETMSG.MSG_TYPES.CLIENT_REQUEST_SYNC:
@@ -234,7 +227,6 @@ namespace ServerClient.Server {
                     //for sync purposes
                     break;
                 case NETMSG.MSG_TYPES.CLIENT_REQUEST_UID:
-                    Console.WriteLine( "/" );
                     CardUtils.Player p = game.createPlayer();
                     game.AddPlayer( p );
                     SendClient( client, new NETMSG(NETMSG.MSG_TYPES.SERVER_PLAYER_UID, objToBytes( p ) ) );
@@ -245,6 +237,8 @@ namespace ServerClient.Server {
                     BroadCastExceptForClient( client, msg );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
+                    Console.WriteLine( "player picked" );
+
                     game.PickCard( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
                     BroadCastExceptForClient( client, msg );
                     break;
