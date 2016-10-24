@@ -13,11 +13,14 @@ namespace CardUtils {
             
         }
     }
-    
+
     [Serializable]
     public class Game {
         private Deck deck = new Deck();
-
+        public bool Finished {
+            get;
+            set;
+        }
         public Stack<Player> WaitingTurn = new Stack<Player>();
         public List<Player> Players = new List<Player>();
 
@@ -40,7 +43,10 @@ namespace CardUtils {
             }
         }
         
-        private float Pot = 0;
+        public float Pot {
+            get;
+            private set;
+        } = 0;
         public Game(List<Player> players) {
             this.Players = players;
 
@@ -69,6 +75,10 @@ namespace CardUtils {
             
         }
 
+        public bool isPlaying(Player p) {
+            return p.ID == this.PlayingPlayer.ID;
+        }
+
         public void TurnChange(Player p) {
             if (!this.Exists(p))
                 throw new GameException("Cannot change turn to player " + p.ToString() + " because he is not part of the game.");
@@ -83,7 +93,7 @@ namespace CardUtils {
                 throw new GameException("Cannot change turn to player which id is '"+ playerId + "' because he doesn't belong to the list of players");
             }
         }
-        private Player FindPlayer(uint playerId) {
+        public Player FindPlayer(uint playerId) {
             Player p = this.Players.Find((Player candidate) => candidate.ID == playerId);
             if(p == null) {
                 throw new GameException("Player whose id is '"+playerId+"' is not part of the game.");
@@ -91,7 +101,7 @@ namespace CardUtils {
             return p;
         }
 
-        private bool Exists(uint playerId) {
+        public bool Exists(uint playerId) {
             try {
                 return this.FindPlayer(playerId) != null;
             } catch (GameException playerNotFound) {

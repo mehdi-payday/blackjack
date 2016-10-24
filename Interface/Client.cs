@@ -20,7 +20,10 @@ namespace ServerClient.Client {
         private TcpClient socket;
         private NETMSG toSend;
         private bool exitRequested;
-        private uint playerID;
+        public uint playerID {
+            get;
+            private set;
+        }
         private Interface.Form1 ui;
 
         public BinaryFormatter Bf;
@@ -207,7 +210,6 @@ namespace ServerClient.Client {
                     break;
                 case NETMSG.MSG_TYPES.SERVER_GAME:
                     this.Game = (CardUtils.Game)NETMSG.bytesToObj( msg.Payload );
-
                     break;
                 case NETMSG.MSG_TYPES.SERVER_FULL:
                     MessageBox.Show( "The server is full. Closing connection." );
@@ -225,24 +227,37 @@ namespace ServerClient.Client {
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_BETS:
                     this.Game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd );
+
+                    this.ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_CONNECTED:
                     CardUtils.Player pla = (CardUtils.Player)NETMSG.bytesToObj( msg.Payload );
                     Console.WriteLine( "new player!: " + pla.ID );
                     Game.AddPlayer( pla );
+
+                    this.ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_DISCONNECTED:
                     uint id = (uint)NETMSG.bytesToObj( msg.Payload );
                     this.Game.Disconnect( id );
+
+                    this.ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
                     this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+
+                    this.ui.RefreshView();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
                     this.Game.Pass( (uint)NETMSG.bytesToObj( msg.Payload ) );
+
+                    this.ui.RefreshView();
                     break;
 
                 case NETMSG.MSG_TYPES.END_GAME:
+                    this.Game.Finished = true;
+
+                    this.ui.RefreshView();
                     //say who won
                     break;
 

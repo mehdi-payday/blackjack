@@ -295,36 +295,42 @@ namespace Interface
             this.currentPot.Text ="0";
             this.btnHitMe.Enabled = true;
         }
-        public void ShowPlayer1Cards(CardUtils.Deck hand) {
-            List<CardUtils.Card> playerCards = hand.getCards();
+        public void DisplayPlayers(CardUtils.Player actualPlayer, CardUtils.Player player2, CardUtils.Player player3, bool gameFinished = false) {
+            this.ShowPlayerCards(actualPlayer, this.Player1Panel, this.client.Game.isPlaying(actualPlayer), null, null, gameFinished);
+            this.ShowPlayerCards(player2, this.Player2Panel, this.client.Game.isPlaying(player2), this.radioButton1, this.radioButton2, gameFinished);
+            this.ShowPlayerCards(player3, this.Player3Panel, this.client.Game.isPlaying(player3), this.radioButton3, this.radioButton4, gameFinished);
+        }
+        public void DisplayActualPlayer(CardUtils.Player actualPlayer) {
+            this.textBox_balance.Text = "" + actualPlayer.Bourse;
+        }
+        public void DisplayGameState() {
+            CardUtils.Game game = this.client.Game;
+
+            float pot = game.Pot;
+            bool finished = game.Finished;
+
+            this.currentPot.Text = "" + pot;
+        }
+
+        public void ShowPlayerCards(
+            CardUtils.Player player,
+            System.Windows.Forms.Panel playerPanel,
+            bool isPlaying,
+            System.Windows.Forms.RadioButton playingRadio=null,
+            System.Windows.Forms.RadioButton standingRadio=null,
+            bool gameFinished = false) {
+            List<CardUtils.Card> playerCards = player.Hand.getCards();
             int width = 65;
             int spacing = 5;
             int row = 11;
             int cardNb = 0; // when the number of cards is 4 we reset to 0 so we can start the new row
             this.Player1Panel.Controls.Clear();
+
+            playingRadio.Checked = isPlaying;
+            standingRadio.Checked = !isPlaying;
+            
+
             for (int i = 0; i < 2; i++) {
-                if (i == 4) { row = 142; cardNb = 0; }
-                string cardImage = playerCards[i].ImagePath();
-                System.Windows.Forms.PictureBox aCard = new System.Windows.Forms.PictureBox();
-                aCard.Size = new System.Drawing.Size(65, 125);
-                aCard.Location = new System.Drawing.Point((cardNb * width) + spacing, row);
-                aCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-                aCard.Image = (System.Drawing.Image)global::Interface.Properties.Resources.ResourceManager.GetObject(cardImage+"");
-                System.Windows.Forms.MessageBox.Show(cardImage);
-                this.Player1Panel.Controls.Add(aCard);
-                cardNb++;
-                
-            }
-        }
-        public void ShowPlayer2Cards(CardUtils.Deck hand, bool gameFinished = false) {
-            List<CardUtils.Card> playerCards = hand.getCards();
-            int width = 65;
-            int spacing = 5;
-            int row = 11;
-            int cardNb = 0; // when the number of cards is 4 we reset to 0 so we can start the new row
-            this.Player2Panel.Controls.Clear();
-            for (int i = 0; i < 6; i++)
-            {
                 if (i == 4) { row = 142; cardNb = 0; }
                 string cardImage = playerCards[i].ImagePath();
                 System.Windows.Forms.PictureBox aCard = new System.Windows.Forms.PictureBox();
@@ -335,40 +341,13 @@ namespace Interface
                     cardImage = "_back";
                 }
                 aCard.Image = (System.Drawing.Image)global::Interface.Properties.Resources.ResourceManager.GetObject(cardImage + "");
-                
-                
                 System.Windows.Forms.MessageBox.Show(cardImage);
-                this.Player2Panel.Controls.Add(aCard);
+                playerPanel.Controls.Add(aCard);
                 cardNb++;
 
             }
         }
-        public void ShowPlayer3Cards(CardUtils.Deck hand, bool gameFinished = false) {
-            List<CardUtils.Card> playerCards = hand.getCards();
-            int width = 65;
-            int spacing = 5;
-            int row = 11;
-            int cardNb = 0; // when the number of cards is 4 we reset to 0 so we can start the new row
-            this.Player3Panel.Controls.Clear();
-            for (int i = 0; i < 2; i++)
-            {
-                if (i == 4) { row = 142; cardNb = 0; }
-                string cardImage = playerCards[i].ImagePath();
-                System.Windows.Forms.PictureBox aCard = new System.Windows.Forms.PictureBox();
-                aCard.Size = new System.Drawing.Size(65, 125);
-                aCard.Location = new System.Drawing.Point((cardNb * width) + spacing, row);
-                aCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-                if (!gameFinished)
-                {
-                    cardImage = "_back";
-                }
-                aCard.Image = (System.Drawing.Image)global::Interface.Properties.Resources.ResourceManager.GetObject(cardImage + "");
-                System.Windows.Forms.MessageBox.Show(cardImage);
-                this.Player3Panel.Controls.Add(aCard);
-                cardNb++;
-
-            }
-        }        
+        
         private System.Windows.Forms.Panel Player2Panel;
         private System.Windows.Forms.Panel Player3Panel;
         private System.Windows.Forms.Panel Player1Panel;

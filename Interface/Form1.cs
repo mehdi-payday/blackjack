@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Collections;
+using System.Collections.Generic;
 namespace Interface
 {
     public partial class Form1 : Form
     {
-        private CardUtils.Game game;
+        //private CardUtils.Game game;
         /* private CardUtils.Player player1;
          private CardUtils.Player player2;
          private CardUtils.Player player3;*/
@@ -14,7 +15,7 @@ namespace Interface
         public Form1()
         {
             InitializeComponent();
-            this.game = new CardUtils.Game();
+            //this.game = new CardUtils.Game();
             /*
             this.player1 = new CardUtils.Player("Jeremy", this.game.generatePlayerId());
             this.player2 = new CardUtils.Player("Mehdi", this.game.generatePlayerId());
@@ -40,18 +41,26 @@ namespace Interface
 
             hand.Add(card1);
             hand.Add(card2);
+
             //this.refreshHands(hand);
             //CardUtils.Player player1 = new CardUtils.Player("mehdi", 1);
             //player1.assignCard(card1);
             //player1.assignCard(card2);
 
         }
-        /*
-        public void refreshHands(Hand hand) {
-            this.ShowPlayer1Cards(hand);
-            this.ShowPlayer2Cards(hand, true);
-            this.ShowPlayer3Cards(hand);
-        }*/
+
+        public void RefreshView() {
+            List<CardUtils.Player> other_players = this.client.Game.Players;
+            CardUtils.Player actualPlayer = this.client.Game.FindPlayer(this.client.playerID);
+            other_players.Remove(actualPlayer);
+
+            CardUtils.Player player1 = actualPlayer;
+            CardUtils.Player player2 = other_players[1];
+            CardUtils.Player player3 = other_players[2];
+
+            this.DisplayPlayers(player1, player2, player3);
+            this.DisplayGameState();
+        }
 
         public void BtnStand_Click(object sender, EventArgs e) {
             this.btnHitMe.Enabled = false;
