@@ -163,7 +163,6 @@ namespace CardUtils {
         * Faire passer le tour du joueur à l'id playerId
         */
         public void Pass(uint playerId) {
-            
             if(this.PlayingPlayerIndex != playerId) {
                 throw new GameException("Cannot pass player whose id is " + playerId + ", because he's not the actual playing player.");
             }

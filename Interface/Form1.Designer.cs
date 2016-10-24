@@ -53,6 +53,9 @@ namespace Interface
             this.panel2 = new System.Windows.Forms.Panel();
             this.currentPot = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnBet = new System.Windows.Forms.Button();
+            this.textBox_Bet = new System.Windows.Forms.TextBox();
+            this.labelBet = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.player2Status.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -80,14 +83,14 @@ namespace Interface
             this.Player1Panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Player1Panel.Location = new System.Drawing.Point(304, 417);
             this.Player1Panel.Name = "Player1Panel";
-            this.Player1Panel.Size = new System.Drawing.Size(359, 231);
+            this.Player1Panel.Size = new System.Drawing.Size(359, 289);
             this.Player1Panel.TabIndex = 2;
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.textBox_balance);
             this.panel1.Controls.Add(this.label_balance);
-            this.panel1.Location = new System.Drawing.Point(593, 654);
+            this.panel1.Location = new System.Drawing.Point(669, 417);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(70, 48);
             this.panel1.TabIndex = 6;
@@ -112,7 +115,7 @@ namespace Interface
             // 
             // btnStand
             // 
-            this.btnStand.Location = new System.Drawing.Point(377, 665);
+            this.btnStand.Location = new System.Drawing.Point(377, 721);
             this.btnStand.Name = "btnStand";
             this.btnStand.Size = new System.Drawing.Size(66, 30);
             this.btnStand.TabIndex = 1;
@@ -122,7 +125,7 @@ namespace Interface
             // 
             // btnHitMe
             // 
-            this.btnHitMe.Location = new System.Drawing.Point(305, 665);
+            this.btnHitMe.Location = new System.Drawing.Point(305, 721);
             this.btnHitMe.Name = "btnHitMe";
             this.btnHitMe.Size = new System.Drawing.Size(66, 30);
             this.btnHitMe.TabIndex = 0;
@@ -256,12 +259,43 @@ namespace Interface
             this.label1.TabIndex = 0;
             this.label1.Text = "Current pot";
             // 
+            // btnBet
+            // 
+            this.btnBet.Location = new System.Drawing.Point(600, 721);
+            this.btnBet.Name = "btnBet";
+            this.btnBet.Size = new System.Drawing.Size(67, 30);
+            this.btnBet.TabIndex = 14;
+            this.btnBet.Text = "Bet";
+            this.btnBet.UseVisualStyleBackColor = true;
+            this.btnBet.Click += new System.EventHandler(this.btnBet_Click);
+            // 
+            // textBox_Bet
+            // 
+            this.textBox_Bet.Location = new System.Drawing.Point(531, 727);
+            this.textBox_Bet.Name = "textBox_Bet";
+            this.textBox_Bet.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox_Bet.Size = new System.Drawing.Size(63, 20);
+            this.textBox_Bet.TabIndex = 15;
+            // 
+            // labelBet
+            // 
+            this.labelBet.AutoSize = true;
+            this.labelBet.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelBet.Location = new System.Drawing.Point(446, 725);
+            this.labelBet.Name = "labelBet";
+            this.labelBet.Size = new System.Drawing.Size(80, 20);
+            this.labelBet.TabIndex = 16;
+            this.labelBet.Text = "Your Bet :";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LimeGreen;
-            this.ClientSize = new System.Drawing.Size(964, 728);
+            this.ClientSize = new System.Drawing.Size(964, 802);
+            this.Controls.Add(this.labelBet);
+            this.Controls.Add(this.textBox_Bet);
+            this.Controls.Add(this.btnBet);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.player2Status);
@@ -401,6 +435,9 @@ namespace Interface
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TextBox currentPot;
         private System.Windows.Forms.Label label1;
+        private Button btnBet;
+        private TextBox textBox_Bet;
+        private Label labelBet;
     }
 }
 
