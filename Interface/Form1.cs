@@ -55,9 +55,15 @@ namespace Interface
             other_players.Remove(actualPlayer);
 
             CardUtils.Player player1 = actualPlayer;
-            CardUtils.Player player2 = other_players[1];
-            CardUtils.Player player3 = other_players[2];
-
+            CardUtils.Player player2 = null, player3 = null;²
+            
+            if (other_players.Count > 1) {
+                player2 = other_players[1];
+                if (other_players.Count > 2) {
+                    player3 = other_players[2];
+                }
+            }
+            
             this.DisplayPlayers(player1, player2, player3);
             this.DisplayGameState();
         }

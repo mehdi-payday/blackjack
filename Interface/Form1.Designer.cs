@@ -296,12 +296,18 @@ namespace Interface
             this.btnHitMe.Enabled = true;
         }
         public void DisplayPlayers(CardUtils.Player actualPlayer, CardUtils.Player player2, CardUtils.Player player3, bool gameFinished = false) {
-            this.ShowPlayerCards(actualPlayer, this.Player1Panel, this.client.Game.isPlaying(actualPlayer), null, null, gameFinished);
-            this.ShowPlayerCards(player2, this.Player2Panel, this.client.Game.isPlaying(player2), this.radioButton1, this.radioButton2, gameFinished);
-            this.ShowPlayerCards(player3, this.Player3Panel, this.client.Game.isPlaying(player3), this.radioButton3, this.radioButton4, gameFinished);
+            if(actualPlayer != null)
+                this.ShowPlayerCards(actualPlayer, this.Player1Panel, this.client.Game.isPlaying(actualPlayer), null, null, gameFinished);
+            if(player2 != null)
+                this.ShowPlayerCards(player2, this.Player2Panel, this.client.Game.isPlaying(player2), this.radioButton1, this.radioButton2, gameFinished);
+            if(player3 != null)
+                this.ShowPlayerCards(player3, this.Player3Panel, this.client.Game.isPlaying(player3), this.radioButton3, this.radioButton4, gameFinished);
         }
         public void DisplayActualPlayer(CardUtils.Player actualPlayer) {
             this.textBox_balance.Text = "" + actualPlayer.Bourse;
+
+            this.btnHitMe.Enabled = this.client.Game.isPlaying(actualPlayer);
+            this.btnStand.Enabled = this.client.Game.isPlaying(actualPlayer);
         }
         public void DisplayGameState() {
             CardUtils.Game game = this.client.Game;
