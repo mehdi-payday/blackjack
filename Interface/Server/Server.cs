@@ -231,6 +231,7 @@ namespace ServerClient.Server {
                     CardUtils.Player p = game.createPlayer();
                     game.AddPlayer( p );
                     if(game.Players.Count == 1) {
+                        Console.WriteLine( "p is playing " + p.ID );
                         game.PlayingPlayer = game.Players[0];
                     }
                     SendClient( client, new NETMSG(NETMSG.MSG_TYPES.SERVER_PLAYER_UID, objToBytes( p ) ) );
