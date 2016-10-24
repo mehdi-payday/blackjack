@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Collections;
+using System.Threading;
+
 namespace Interface
 {
     public partial class Form1 : Form
@@ -13,6 +15,11 @@ namespace Interface
         public Form1()
         {
             InitializeComponent();
+            client = new ServerClient.Client.Client();
+            clientThread = new Thread( client.Start );
+            Thread.Sleep( 100 );
+            clientThread.Start();
+            
             this.game = new CardUtils.Game();
 
             this.player1 = new CardUtils.Player("Jeremy", this.game.generatePlayerId());
@@ -25,7 +32,6 @@ namespace Interface
         }
 
         public void BtnHitMe_Click(object sender, EventArgs e) {
-            // Button Hit Me Click
 
             CardUtils.Deck hand  = new CardUtils.Deck();
             CardUtils.Card card1 = new CardUtils.Card(2, CardUtils.Card.Suits.SPADES);

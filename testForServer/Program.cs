@@ -23,14 +23,20 @@ namespace testForServer {
                 Thread tClient = new Thread( client.Start );
                 Thread tClient2 = new Thread( client2.Start );
 
+
                 tServer.Start();
                 Thread.Sleep( 100 );
-                tClient.Start();
+                Console.WriteLine( "server..." );
+                Interface.Form1 ui1 = new Interface.Form1();
+                Application.Run(ui1);
+
+                
+                /*tClient.Start();
                 Thread.Sleep( 1000 );
                 tClient2.Start();
 
                 tClient.Join();
-                tClient2.Join();
+                tClient2.Join();*/
                 tServer.Join();
 
             } catch (Exception e) {

@@ -21,13 +21,11 @@ namespace ServerClient.Client {
         private NETMSG toSend;
         private bool exitRequested;
         private uint playerID;
-        private Thread uiThread;
 
         public BinaryFormatter Bf;
         public CardUtils.Game Game;
         public Thread MainLoopThread;
         public List<NETMSG> sendStack;
-        public Interface.Form1 Ui;
 
 
         
@@ -50,7 +48,6 @@ namespace ServerClient.Client {
             Bf = new BinaryFormatter();
             exitRequested = false;
             sendStack = new List<NETMSG>();
-            Ui = new Interface.Form1();
         }
         #endregion
 
@@ -93,11 +90,6 @@ namespace ServerClient.Client {
                         //ready to play
                         //thread not to freeze UI
                         MainLoopThread = new Thread( () => this.MainLoop(/*this*/) );
-
-                        //start ui
-                        Application.EnableVisualStyles();
-                        Application.SetCompatibleTextRenderingDefault( false );
-                        Application.Run( Ui );
 
 
                         MainLoopThread.Start();
@@ -245,7 +237,7 @@ namespace ServerClient.Client {
                     this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
-                    this.Game.Pass( ((CardUtils.Player)NETMSG.bytesToObj( msg.Payload )).ID );
+                    this.Game.Pass( (uint)NETMSG.bytesToObj( msg.Payload ) );
                     break;
 
                 case NETMSG.MSG_TYPES.END_GAME:
@@ -270,6 +262,11 @@ namespace ServerClient.Client {
                 return mem.ToArray();
             }
             return null;
+        }
+
+
+        public void HitMe() {
+            AddToSendQueue( new NETMSG( NETMSG.MSG_TYPES.PLAYER_PICKS, playerID ) );
         }
 
     }
