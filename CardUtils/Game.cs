@@ -70,6 +70,8 @@ namespace CardUtils {
         }
 
         public void TurnChange(Player p) {
+            if (!this.Exists(p))
+                throw new GameException("Cannot change turn to player " + p.ToString() + " because he is not part of the game.");
             this.PlayingPlayer = p;
         }
 
@@ -80,7 +82,6 @@ namespace CardUtils {
             } else {
                 throw new GameException("Cannot change turn to player which id is '"+ playerId + "' because he doesn't belong to the list of players");
             }
-            
         }
         private Player FindPlayer(uint playerId) {
             Player p = this.Players.Find((Player candidate) => candidate.ID == playerId);
@@ -88,6 +89,18 @@ namespace CardUtils {
                 throw new GameException("Player whose id is '"+playerId+"' is not part of the game.");
             }
             return p;
+        }
+
+        private bool Exists(uint playerId) {
+            try {
+                return this.FindPlayer(playerId) != null;
+            } catch (GameException playerNotFound) {
+                return false;
+            }
+        }
+
+        private bool Exists(Player p) {
+            this.Exists(p.ID);
         }
 		
 		public Player createPlayer() {
@@ -124,6 +137,10 @@ namespace CardUtils {
             }
         }
 
+        public void Bet(Player player, float amount) {
+            this.Bet(player.ID, amount);
+        }
+
         /**
         * Faire passer le tour du joueur à l'id playerId
         */
@@ -135,8 +152,16 @@ namespace CardUtils {
             
         }
 
+        public void Pass(Player player) {
+            this.Pass(player.ID);
+        }
+
         public void Disconnect(uint playerId) {
             this.Players.Remove(this.FindPlayer(playerId));
+        }
+
+        public void Disconnect(Player player) {
+            this.Disconnect(player.ID);
         }
 
         public Card PickCard(uint playerId) {
@@ -145,6 +170,10 @@ namespace CardUtils {
             this.FindPlayer(playerId).assignCard(picked);
 
             return picked;
+        }
+
+        public Card PickCard(Player player) {
+            this.PickCard(player.ID);
         }
     }
 }
