@@ -50,18 +50,23 @@ namespace CardUtils {
         } = 0;
         public Game(List<Player> players) {
             this.Players = players;
+            this.init();
+        }
+        public void init() {
 
             // Générer les cartes en fonction du nombre de joueurs
-            int countPlayers = players.Count();
-            for(int i = 0; i < countPlayers; i++) {
+            //int countPlayers =  this.Players.Count();
+            int countPlayers = 3;
+            for (int i = 0; i < countPlayers; i++) {
                 this.deck += Deck.generateDeck();
             }
 
             // "Fermer" la partie
-            this.Lock();
+            //this.Lock();
         }
 
         public Game() {
+            this.init();
         }
 
         public void Lock() {
@@ -197,6 +202,11 @@ namespace CardUtils {
             this.FindPlayer(playerId).assignCard(picked);
 
             return picked;
+        }
+
+        public Card PickCard(uint playerId, Card card) {
+            this.FindPlayer(playerId).assignCard(card);
+            return card;
         }
 
         public Card PickCard(Player player) {

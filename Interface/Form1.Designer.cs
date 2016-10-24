@@ -366,7 +366,7 @@ namespace Interface
                 aCard.Size = new System.Drawing.Size(65, 125);
                 aCard.Location = new System.Drawing.Point((cardNb * width) + spacing, row);
                 aCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-                if (!gameFinished) {
+                if (!gameFinished && !(this.client.playerID == player.ID)) {
                     cardImage = "_back";
                 }
                 aCard.Image = (System.Drawing.Image)global::Interface.Properties.Resources.ResourceManager.GetObject(cardImage + "");

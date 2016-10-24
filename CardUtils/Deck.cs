@@ -40,6 +40,8 @@ namespace CardUtils
         }
 
         public Card Pick() {
+            if (cards.Count() == 0)
+                throw new Exception("Cannot pick a card from an empty Deck. (Cards count : " + this.cards.Count() + ")");
             return cards[r.Next( 0, cards.Count() )];
         }
 

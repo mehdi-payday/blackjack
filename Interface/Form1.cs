@@ -6,18 +6,6 @@ using System.Threading;
 
 namespace Interface
 {
-    public class Handler {
-        public Form1 f;
-        public List<Action> a = new List<Action>();
-
-        public void ExecNext() {
-            if(a.Count > 0) {
-                a[0].Invoke();
-                a.RemoveAt( 0 );
-            }
-            
-        }
-    }
 
     public partial class Form1 : Form
     {
@@ -92,10 +80,10 @@ namespace Interface
             CardUtils.Player player1 = actualPlayer;
             CardUtils.Player player2 = null, player3 = null;
             
-            if (other_players.Count > 1) {
-                player2 = other_players[1];
-                if (other_players.Count > 2) {
-                    player3 = other_players[2];
+            if (other_players.Count > 0) {
+                player2 = other_players[0];
+                if (other_players.Count > 1) {
+                    player3 = other_players[1];
                 }
             }
             
@@ -111,4 +99,17 @@ namespace Interface
 
         }
     }
+    public class Handler {
+        public Form1 f;
+        public List<Action> a = new List<Action>();
+
+        public void ExecNext() {
+            if (a.Count > 0) {
+                a[0].Invoke();
+                a.RemoveAt(0);
+            }
+
+        }
+    }
+
 }
