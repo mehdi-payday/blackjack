@@ -243,13 +243,25 @@ namespace ServerClient.Server {
                     BroadCastExceptForClient( client, msg );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
-                    Console.WriteLine( "player picked: "+ (uint)NETMSG.bytesToObj( msg.Payload ) );
+                    Console.WriteLine("player picked: "+ (uint) NETMSG.bytesToObj(msg.Payload));
+                    uint pid = (uint)NETMSG.bytesToObj(msg.Payload);
+                    CardUtils.Card picked = game.PickCard(pid);
 
-                    game.PickCard( (uint)NETMSG.bytesToObj( msg.Payload ) );
-                    FullBroadCast(msg );
+                    FullBroadCast(
+                        new NETMSG(
+                            NETMSG.MSG_TYPES.PLAYER_PICKS, 
+                            objToBytes(
+                                new PICK(
+                                    pid,
+                                    picked
+                                )
+                            )
+                        )
+                    );
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_BETS:
                     game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd);
+
                     BroadCastExceptForClient( client, msg );
                     break;
 
@@ -339,6 +351,17 @@ namespace ServerClient.Server {
         public BET(uint p, float b ) {
             this.PlayerID = p;
             this.betTOAdd = b;
+        }
+    }
+
+    [Serializable]
+    public struct PICK {
+        public uint PlayerID;
+        public CardUtils.Card Card;
+
+        public PICK(uint playerId, CardUtils.Card card) {
+            this.Card = card;
+            this.PlayerID = playerId;
         }
     }
     #endregion

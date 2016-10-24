@@ -254,7 +254,8 @@ namespace ServerClient.Client {
                     RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
-                    this.Game.PickCard( (uint)NETMSG.bytesToObj( msg.Payload ) );
+                    PICK pick = ((PICK)NETMSG.bytesToObj(msg.Payload));
+                    this.Game.PickCard(pick.PlayerID, pick.Card);
                     //ui.RefreshView();
                     RefreshUI();
                     break;
