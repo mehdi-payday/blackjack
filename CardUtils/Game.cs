@@ -168,7 +168,9 @@ namespace CardUtils {
             }
             
             int index = this.Players.FindIndex((p) => p.ID == this.PlayingPlayerIndex);
-            if(index == this.Players.Count - 1) {
+            index++;
+            if (index == this.Players.Count - 1) {
+                throw new GameException("End Of The Game");
                 // Last Player. Game finished.
                 this.Finished = true;
             } else {
