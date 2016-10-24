@@ -100,7 +100,7 @@ namespace CardUtils {
         }
 
         private bool Exists(Player p) {
-            this.Exists(p.ID);
+            return this.Exists(p.ID);
         }
 		
 		public Player createPlayer() {
@@ -173,7 +173,7 @@ namespace CardUtils {
         }
 
         public Card PickCard(Player player) {
-            this.PickCard(player.ID);
+            return this.PickCard(player.ID);
         }
     }
 }
