@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Collections;
+using System.Threading;
+
 namespace Interface
 {
     public partial class Form1 : Form
     {
+        private ServerClient.Client.Client client;
+        private Thread clientThread;
+
         public Form1()
         {
             InitializeComponent();
-            
+            client = new ServerClient.Client.Client();
+            clientThread = new Thread( client.Start );
+            Thread.Sleep( 100 );
+            clientThread.Start();
             
         }
 
         public void BtnHitMe_Click(object sender, EventArgs e) {
-
 
             CardUtils.Deck hand  = new CardUtils.Deck();
             CardUtils.Card card1 = new CardUtils.Card(2, CardUtils.Card.Suits.SPADES);

@@ -286,6 +286,10 @@
       <Project>{ddd6bae3-8056-43f3-bb3d-88ada9965413}</Project>
       <Name>CardUtils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServerClient\ServerClient.csproj">
+      <Project>{e6cdbbc7-0db9-4882-9ecc-6b5429665f8f}</Project>
+      <Name>ServerClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\_ace_of_clubs.png" />
