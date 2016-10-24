@@ -47,7 +47,45 @@ namespace CardUtils {
             this.ID = ID;
             this.Hand = new Deck();
         }
+        public void displayCards() {
+            Console.WriteLine("Player '" + this.ToString() + "' cards :");
+            foreach (Card c in this.Hand) {
+                Console.WriteLine(c.ToString());
+            }
+            Console.WriteLine("Points : " + this.Points);
+            Console.WriteLine();
+        }
 
+        public int Points {
+            get {
+                int points = 0;
+                int number_of_aces = 0;
+                foreach (Card card in this.Hand) {
+                    int pt = card.Number;
+                    if(card.Number > 10) { // Bigger than 10
+                        pt = 10;
+                    }
+                    if(card.Number == 1) { // Ace
+                        number_of_aces++;
+                        pt = 11;
+                    }
+                    points += pt;
+                }
+                
+                
+                while(points > 21 && number_of_aces > 0) {
+                    number_of_aces--;
+                    points -= 10;
+                    Console.WriteLine("Nb points : " + points);
+                    Console.WriteLine("Nb Aces : " + number_of_aces);
+                }
+                
+                //points -= ((points - 21) / (number_of_aces * 11)) * 10;
+                
+                return points;
+            }
+        }
+        
         public void assignCard(Card card) {
             this.Hand += card;
         }
@@ -60,7 +98,7 @@ namespace CardUtils {
             this.BetAmount += amount;
         }
 
-        public string toString() {
+        public override string ToString() {
             return "<Player " + this.Name + ">";
         }
     }
