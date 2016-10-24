@@ -306,10 +306,19 @@ namespace Interface
                 this.ShowPlayerCards(player3, this.Player3Panel, this.client.Game.isPlaying(player3), this.radioButton3, this.radioButton4, gameFinished);
         }
         public void DisplayActualPlayer(CardUtils.Player actualPlayer) {
-            this.textBox_balance.Text = "" + actualPlayer.Bourse;
+            textBox_balance.Invoke( (MethodInvoker) delegate {
+                this.textBox_balance.Text = "" + actualPlayer.Bourse;
 
-            this.btnHitMe.Enabled = this.client.Game.isPlaying(actualPlayer);
-            this.btnStand.Enabled = this.client.Game.isPlaying(actualPlayer);
+            } );
+
+            btnHitMe.Invoke( (MethodInvoker)delegate {
+                this.btnHitMe.Enabled = this.client.Game.isPlaying( actualPlayer );
+
+            } );
+            btnStand.Invoke( (MethodInvoker) delegate {
+                this.btnStand.Enabled = this.client.Game.isPlaying( actualPlayer );
+
+            } );
         }
         public void DisplayGameState() {
             CardUtils.Game game = this.client.Game;
@@ -341,12 +350,13 @@ namespace Interface
 
 
             if (playingRadio != null)
-                playingRadio.Checked = isPlaying;
+                playingRadio.Invoke((MethodInvoker) delegate {
+                    playingRadio.Checked = isPlaying;
+                } );
             if (standingRadio != null)
                 standingRadio.Invoke( (MethodInvoker)delegate {
-                    
+                    standingRadio.Checked = !isPlaying;
                 } );
-                standingRadio.Checked = !isPlaying;
 
             
             for (int i = 0; i < playerCards.Count; i++) {
