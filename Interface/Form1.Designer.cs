@@ -65,32 +65,32 @@ namespace Interface
             // Player2Panel
             // 
             this.Player2Panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Player2Panel.Location = new System.Drawing.Point(12, 72);
+            this.Player2Panel.Location = new System.Drawing.Point(12, 73);
             this.Player2Panel.Name = "Player2Panel";
-            this.Player2Panel.Size = new System.Drawing.Size(359, 286);
+            this.Player2Panel.Size = new System.Drawing.Size(299, 236);
             this.Player2Panel.TabIndex = 1;
             // 
             // Player3Panel
             // 
             this.Player3Panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Player3Panel.Location = new System.Drawing.Point(593, 72);
+            this.Player3Panel.Location = new System.Drawing.Point(493, 73);
             this.Player3Panel.Name = "Player3Panel";
-            this.Player3Panel.Size = new System.Drawing.Size(359, 286);
+            this.Player3Panel.Size = new System.Drawing.Size(302, 236);
             this.Player3Panel.TabIndex = 1;
             // 
             // Player1Panel
             // 
             this.Player1Panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Player1Panel.Location = new System.Drawing.Point(304, 417);
+            this.Player1Panel.Location = new System.Drawing.Point(219, 346);
             this.Player1Panel.Name = "Player1Panel";
-            this.Player1Panel.Size = new System.Drawing.Size(359, 289);
+            this.Player1Panel.Size = new System.Drawing.Size(358, 211);
             this.Player1Panel.TabIndex = 2;
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.textBox_balance);
             this.panel1.Controls.Add(this.label_balance);
-            this.panel1.Location = new System.Drawing.Point(669, 417);
+            this.panel1.Location = new System.Drawing.Point(584, 418);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(70, 48);
             this.panel1.TabIndex = 6;
@@ -115,7 +115,7 @@ namespace Interface
             // 
             // btnStand
             // 
-            this.btnStand.Location = new System.Drawing.Point(377, 721);
+            this.btnStand.Location = new System.Drawing.Point(292, 563);
             this.btnStand.Name = "btnStand";
             this.btnStand.Size = new System.Drawing.Size(66, 30);
             this.btnStand.TabIndex = 1;
@@ -125,7 +125,7 @@ namespace Interface
             // 
             // btnHitMe
             // 
-            this.btnHitMe.Location = new System.Drawing.Point(305, 721);
+            this.btnHitMe.Location = new System.Drawing.Point(220, 563);
             this.btnHitMe.Name = "btnHitMe";
             this.btnHitMe.Size = new System.Drawing.Size(66, 30);
             this.btnHitMe.TabIndex = 0;
@@ -137,7 +137,7 @@ namespace Interface
             // 
             this.label_Player2.AutoSize = true;
             this.label_Player2.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Player2.Location = new System.Drawing.Point(6, 38);
+            this.label_Player2.Location = new System.Drawing.Point(6, 37);
             this.label_Player2.Name = "label_Player2";
             this.label_Player2.Size = new System.Drawing.Size(121, 31);
             this.label_Player2.TabIndex = 3;
@@ -147,7 +147,7 @@ namespace Interface
             // 
             this.label_Player1.AutoSize = true;
             this.label_Player1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Player1.Location = new System.Drawing.Point(298, 383);
+            this.label_Player1.Location = new System.Drawing.Point(214, 312);
             this.label_Player1.Name = "label_Player1";
             this.label_Player1.Size = new System.Drawing.Size(65, 31);
             this.label_Player1.TabIndex = 4;
@@ -157,7 +157,7 @@ namespace Interface
             // 
             this.label_Player3.AutoSize = true;
             this.label_Player3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Player3.Location = new System.Drawing.Point(587, 38);
+            this.label_Player3.Location = new System.Drawing.Point(487, 39);
             this.label_Player3.Name = "label_Player3";
             this.label_Player3.Size = new System.Drawing.Size(121, 31);
             this.label_Player3.TabIndex = 5;
@@ -190,7 +190,7 @@ namespace Interface
             this.player2Status.Controls.Add(this.radioButton1);
             this.player2Status.Controls.Add(this.radioButton2);
             this.player2Status.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.player2Status.Location = new System.Drawing.Point(171, 20);
+            this.player2Status.Location = new System.Drawing.Point(133, 21);
             this.player2Status.Name = "player2Status";
             this.player2Status.Size = new System.Drawing.Size(200, 49);
             this.player2Status.TabIndex = 11;
@@ -202,7 +202,7 @@ namespace Interface
             this.groupBox1.Controls.Add(this.radioButton3);
             this.groupBox1.Controls.Add(this.radioButton4);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(752, 20);
+            this.groupBox1.Location = new System.Drawing.Point(614, 21);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(200, 49);
             this.groupBox1.TabIndex = 12;
@@ -235,7 +235,7 @@ namespace Interface
             // 
             this.panel2.Controls.Add(this.currentPot);
             this.panel2.Controls.Add(this.label1);
-            this.panel2.Location = new System.Drawing.Point(398, 126);
+            this.panel2.Location = new System.Drawing.Point(317, 137);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(170, 106);
             this.panel2.TabIndex = 13;
@@ -261,7 +261,7 @@ namespace Interface
             // 
             // btnBet
             // 
-            this.btnBet.Location = new System.Drawing.Point(600, 721);
+            this.btnBet.Location = new System.Drawing.Point(510, 563);
             this.btnBet.Name = "btnBet";
             this.btnBet.Size = new System.Drawing.Size(67, 30);
             this.btnBet.TabIndex = 14;
@@ -271,7 +271,7 @@ namespace Interface
             // 
             // textBox_Bet
             // 
-            this.textBox_Bet.Location = new System.Drawing.Point(531, 727);
+            this.textBox_Bet.Location = new System.Drawing.Point(441, 567);
             this.textBox_Bet.Name = "textBox_Bet";
             this.textBox_Bet.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox_Bet.Size = new System.Drawing.Size(63, 20);
@@ -281,18 +281,19 @@ namespace Interface
             // 
             this.labelBet.AutoSize = true;
             this.labelBet.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelBet.Location = new System.Drawing.Point(446, 725);
+            this.labelBet.Location = new System.Drawing.Point(365, 567);
             this.labelBet.Name = "labelBet";
             this.labelBet.Size = new System.Drawing.Size(80, 20);
             this.labelBet.TabIndex = 16;
             this.labelBet.Text = "Your Bet :";
+            this.labelBet.Click += new System.EventHandler(this.labelBet_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LimeGreen;
-            this.ClientSize = new System.Drawing.Size(964, 802);
+            this.ClientSize = new System.Drawing.Size(830, 605);
             this.Controls.Add(this.labelBet);
             this.Controls.Add(this.textBox_Bet);
             this.Controls.Add(this.btnBet);
@@ -332,9 +333,11 @@ namespace Interface
             this.btnHitMe.Enabled = true;
         }
         public void DisplayPlayers(CardUtils.Player actualPlayer, CardUtils.Player player2, CardUtils.Player player3, bool gameFinished = false) {
-            if(actualPlayer != null)
+            if (actualPlayer != null) {
                 this.ShowPlayerCards(actualPlayer, this.Player1Panel, this.client.Game.isPlaying(actualPlayer), null, null, gameFinished);
-            if(player2 != null)
+                //this.DisplayActualPlayer(actualPlayer);
+            }
+            if (player2 != null)
                 this.ShowPlayerCards(player2, this.Player2Panel, this.client.Game.isPlaying(player2), this.radioButton1, this.radioButton2, gameFinished);
             if(player3 != null)
                 this.ShowPlayerCards(player3, this.Player3Panel, this.client.Game.isPlaying(player3), this.radioButton3, this.radioButton4, gameFinished);

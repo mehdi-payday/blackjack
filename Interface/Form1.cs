@@ -18,7 +18,7 @@ namespace Interface
 
         public Form1()
         {
-
+            this.init();
             //InitializeComponent();
             CreateHandle();
           
@@ -39,7 +39,6 @@ namespace Interface
             } );
             client.Start();
             
-
         }
 
         public void init() {
@@ -68,6 +67,7 @@ namespace Interface
         public void RefreshView() {
             //try {
             //List<CardUtils.Player> other_players = this.client.Game.Players;
+            Console.WriteLine("REFRESH VIEW");
             List<CardUtils.Player> other_players = new List<CardUtils.Player>();
 
             foreach (CardUtils.Player p in this.client.Game.Players) {
@@ -75,7 +75,7 @@ namespace Interface
             }
 
             CardUtils.Player actualPlayer = this.client.Game.FindPlayer( this.client.playerID );
-            other_players.Remove( actualPlayer );
+            other_players.Remove(actualPlayer);
 
             CardUtils.Player player1 = actualPlayer;
             CardUtils.Player player2 = null, player3 = null;
@@ -105,6 +105,10 @@ namespace Interface
             this.btnBet.Enabled = false;
             float bet = float.Parse(textBox_Bet.Text);
             client.Bet(bet);
+        }
+
+        private void labelBet_Click(object sender, EventArgs e) {
+
         }
     }
     public class Handler {
