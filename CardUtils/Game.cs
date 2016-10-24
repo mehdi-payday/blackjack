@@ -95,6 +95,7 @@ namespace CardUtils {
             try {
                 return this.FindPlayer(playerId) != null;
             } catch (GameException playerNotFound) {
+                Console.WriteLine( playerNotFound.Message );
                 return false;
             }
         }
