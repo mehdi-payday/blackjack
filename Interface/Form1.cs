@@ -99,6 +99,11 @@ namespace Interface
         private void panel1_Paint(object sender, PaintEventArgs e) {
 
         }
+
+        private void btnBet_Click(object sender, EventArgs e)
+        {
+            this.btnBet.Enabled = false;
+        }
     }
     public class Handler {
         public Form1 f;
