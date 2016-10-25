@@ -124,8 +124,8 @@ namespace CardUtils {
         }
 		
 		public Player createPlayer() {
-            Player new_player = new Player("unamed", this.generatePlayerId());
-
+            Player new_player = new Player("unamed", this.generatePlayerId(), 500);
+            
             return new_player;
 		}
 		public uint generatePlayerId() {

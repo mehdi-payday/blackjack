@@ -46,6 +46,13 @@ namespace CardUtils {
         public Player(String name, uint ID) {
             this.ID = ID;
             this.Hand = new Deck();
+            this.Name = name;
+        }
+        public Player(String name, uint ID, int Bourse) {
+            this.Bourse = Bourse;
+            this.Name = name;
+            this.Hand = new Deck();
+            this.ID = ID;
         }
         public void displayCards() {
             Console.WriteLine("Player '" + this.ToString() + "' cards :");

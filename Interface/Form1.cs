@@ -108,7 +108,10 @@ namespace Interface
         private void btnBet_Click(object sender, EventArgs e)
         {
             this.btnBet.Enabled = false;
+            
             float bet = float.Parse(textBox_Bet.Text);
+            this.textBox_Bet.Text = "";
+
             client.Bet(bet);
         }
 
@@ -126,7 +129,21 @@ namespace Interface
             
         }
 
+        private void Form1_Load(object sender, EventArgs e) {
 
+        }
+
+        private void label_balance_Click(object sender, EventArgs e) {
+
+        }
+
+        private void Player2Panel_Paint(object sender, PaintEventArgs e) {
+
+        }
+
+        private void labelBet_Click(object sender, EventArgs e) {
+
+        }
     }
     
 

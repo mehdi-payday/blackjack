@@ -271,7 +271,8 @@ namespace ServerClient.Server {
                 case NETMSG.MSG_TYPES.PLAYER_BETS:
                     game.Bet( ((BET)NETMSG.bytesToObj( msg.Payload )).PlayerID, ((BET)NETMSG.bytesToObj( msg.Payload )).betTOAdd);
 
-                    BroadCastExceptForClient( client, msg );
+                    FullBroadCast(msg);
+                    //BroadCastExceptForClient(client, msg);
                     break;
 
                 default:
