@@ -346,11 +346,11 @@ namespace Interface
             } );
 
             btnHitMe.Invoke( (MethodInvoker)delegate {
-                this.btnHitMe.Enabled = this.client.Game.isPlaying( actualPlayer );
+                this.btnHitMe.Enabled = this.client.Game.isPlaying(actualPlayer);
 
             } );
             btnStand.Invoke( (MethodInvoker) delegate {
-                this.btnStand.Enabled = this.client.Game.isPlaying( actualPlayer );
+                this.btnStand.Enabled = this.client.Game.isPlaying(actualPlayer);
 
             } );
         }
@@ -361,7 +361,7 @@ namespace Interface
             bool finished = game.Finished;
 
             //this.currentPot.Text = "" + pot;
-            currentPot.Invoke( (MethodInvoker)delegate { currentPot.Text = ""+pot; } );
+            currentPot.Invoke( (MethodInvoker)delegate { currentPot.Text = "" + pot; } );
 
         }
 
@@ -386,11 +386,11 @@ namespace Interface
             if (playingRadio != null)
                 playingRadio.Invoke((MethodInvoker) delegate {
                     playingRadio.Checked = isPlaying;
-                } );
+                });
             if (standingRadio != null)
                 standingRadio.Invoke( (MethodInvoker)delegate {
                     standingRadio.Checked = !isPlaying;
-                } );
+                });
 
             
             for (int i = 0; i < playerCards.Count; i++) {

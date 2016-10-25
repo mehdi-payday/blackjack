@@ -103,6 +103,8 @@ namespace Interface
         private void btnBet_Click(object sender, EventArgs e)
         {
             this.btnBet.Enabled = false;
+            float bet = float.Parse(textBox_Bet.Text);
+            client.Bet(bet);
         }
     }
     public class Handler {

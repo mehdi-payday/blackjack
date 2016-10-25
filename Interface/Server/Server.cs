@@ -229,7 +229,8 @@ namespace ServerClient.Server {
                     break;
                 case NETMSG.MSG_TYPES.CLIENT_REQUEST_UID:
                     CardUtils.Player p = game.createPlayer();
-                    game.AddPlayer( p );
+                    game.AddPlayer(p);
+
                     if(game.Players.Count == 1) {
                         Console.WriteLine( "p is playing " + p.ID );
                         game.PlayingPlayer = game.Players[0];

@@ -30,6 +30,8 @@ namespace CardUtils {
         */
         public bool Locked { get; private set; }
 
+        public Player Winner { get; private set; } = null;
+
         private uint PlayingPlayerIndex;
         public Player PlayingPlayer {
             get {
@@ -148,7 +150,7 @@ namespace CardUtils {
                     p.Bet(amount);
                     this.Pot += amount;
                 } catch(CannotBetException betException) {
-                    throw new GameException("Error when trying to register the bet of the player " + p.toString(), betException);
+                    throw new GameException("Error when trying to register the bet of the player " + p.ToString(), betException);
                 }
             } else {
                 throw new GameException("Error when trying to register the bet of the player which index is "+playerId+" because he doesn't belong to the list of registered players");
@@ -168,18 +170,49 @@ namespace CardUtils {
             }
             
             int index = this.Players.FindIndex((p) => p.ID == this.PlayingPlayerIndex);
-            if(index == this.Players.Count - 1) {
+            Console.WriteLine("Current index : " + index);
+
+            if (index == this.Players.Count - 1) {
                 // Last Player. Game finished.
-                this.Finished = true;
+
+                this.FinishGame();
+
+                Console.WriteLine("Winner cards :");
+                this.Winner.displayCards();
+
+                //throw new GameException("End Of The Game. Winner is " + this.Winner.ToString() + " with " + this.Winner.Points + " points.");
+                
             } else {
                 // Give turn to the next player
                 index++;
                 this.PlayingPlayer = this.Players[index];
             }
-            
+
             //this.PlayingPlayer = this.WaitingTurn.Pop();
         }
 
+        public void FinishGame() {
+            this.Finished = true;
+
+            List<Player> players_arr = new List<Player>();
+            players_arr.AddRange(this.Players);
+
+            players_arr.Sort(delegate (Player p1, Player p2) {
+                if (p1.Points != p2.Points) {
+                    int p1_points = p1.Points > 21 ? -1 : p1.Points;
+                    int p2_points = p2.Points > 21 ? -1 : p2.Points;
+                    
+                    return p2_points - p1_points;
+                }
+                else
+                    return p1.Hand.getCards().Count.CompareTo(p2.Hand.getCards().Count);
+                
+            });
+
+            Console.WriteLine("Players number : " + players_arr.Count);
+
+            this.Winner = players_arr[0];
+        } 
         public void Pass(Player player) {
             if(!this.isPlaying(player)) {
                 throw new GameException("Cannot make player " + player.ToString() + " pass because it is not his turn to play");
