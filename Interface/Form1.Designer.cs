@@ -332,9 +332,11 @@ namespace Interface
             this.btnHitMe.Enabled = true;
         }
         public void DisplayPlayers(CardUtils.Player actualPlayer, CardUtils.Player player2, CardUtils.Player player3, bool gameFinished = false) {
-            if(actualPlayer != null)
+            if (actualPlayer != null) {
                 this.ShowPlayerCards(actualPlayer, this.Player1Panel, this.client.Game.isPlaying(actualPlayer), null, null, gameFinished);
-            if(player2 != null)
+                this.DisplayActualPlayer(actualPlayer);
+            }
+            if (player2 != null)
                 this.ShowPlayerCards(player2, this.Player2Panel, this.client.Game.isPlaying(player2), this.radioButton1, this.radioButton2, gameFinished);
             if(player3 != null)
                 this.ShowPlayerCards(player3, this.Player3Panel, this.client.Game.isPlaying(player3), this.radioButton3, this.radioButton4, gameFinished);
