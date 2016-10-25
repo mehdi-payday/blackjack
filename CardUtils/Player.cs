@@ -76,8 +76,8 @@ namespace CardUtils {
                 while(points > 21 && number_of_aces > 0) {
                     number_of_aces--;
                     points -= 10;
-                    //Console.WriteLine("Nb points : " + points);
-                    //Console.WriteLine("Nb Aces : " + number_of_aces);
+                    Console.WriteLine("Nb points : " + points);
+                    Console.WriteLine("Nb Aces : " + number_of_aces);
                 }
                 
                 //points -= ((points - 21) / (number_of_aces * 11)) * 10;

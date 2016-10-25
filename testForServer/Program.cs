@@ -30,11 +30,9 @@ namespace testForServer {
             
             game.Pass(player1);
 
-            player2.assignCard(new Card(7, Card.Suits.CLUBS));
-            player2.assignCard(new Card(8, Card.Suits.CLUBS));
-            player2.assignCard(new Card(7, Card.Suits.CLUBS));
-            player2.assignCard(new Card(7, Card.Suits.CLUBS));
-            
+            game.PickCard(player2);
+            game.PickCard(player2);
+            game.PickCard(player2);
             game.Pass(player2);
 
             game.PickCard(player3);
@@ -54,8 +52,7 @@ namespace testForServer {
             Console.WriteLine("Winner :");
             game.Winner.displayCards();
 
-            Console.Read();
-            //Console.ReadLine();
+            Console.ReadLine();
         }
         /// <summary>
         /// The main entry point for the application.
@@ -69,28 +66,22 @@ namespace testForServer {
                 /*ServerClient.Client.Client client = new ServerClient.Client.Client(),
                     client2 = new ServerClient.Client.Client();
                     */
-                Thread tServer = new Thread(server.Start);
+                Thread tServer = new Thread( server.Start );
                 /*Thread tClient = new Thread( client.Start );
                 Thread tClient2 = new Thread( client2.Start );
                 */
 
                 tServer.Start();
-                Thread.Sleep(1000);
+                Thread.Sleep( 100 );
+
                 
-
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
-                Thread.Sleep(100);
-
+                Thread.Sleep( 10 );
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
-
-                Thread.Sleep(100);
-
+                Thread.Sleep( 10 );
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
 
-                Thread.Sleep(100);
 
-
-                tServer.Join();
 
                 /*tClient.Start();
                 Thread.Sleep( 1000 );
@@ -98,7 +89,7 @@ namespace testForServer {
 
                 tClient.Join();
                 tClient2.Join();*/
-
+                tServer.Join();
 
             } catch (Exception e) {
                 Console.WriteLine( "ERROR >> " + e.Message );

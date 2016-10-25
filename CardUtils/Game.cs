@@ -199,8 +199,8 @@ namespace CardUtils {
 
             players_arr.Sort(delegate (Player p1, Player p2) {
                 if (p1.Points != p2.Points) {
-                    int p1_points = p1.Points > 21 ? -1 : p1.Points;
-                    int p2_points = p2.Points > 21 ? -1 : p2.Points;
+                    int p1_points = p1.Points > 21 ? p1.Points : -1;
+                    int p2_points = p2.Points > 21 ? p2.Points : -1;
                     
                     return p2_points - p1_points;
                 }
