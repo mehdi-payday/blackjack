@@ -30,9 +30,11 @@ namespace testForServer {
             
             game.Pass(player1);
 
-            game.PickCard(player2);
-            game.PickCard(player2);
-            game.PickCard(player2);
+            player2.assignCard(new Card(7, Card.Suits.CLUBS));
+            player2.assignCard(new Card(8, Card.Suits.CLUBS));
+            player2.assignCard(new Card(7, Card.Suits.CLUBS));
+            player2.assignCard(new Card(7, Card.Suits.CLUBS));
+            
             game.Pass(player2);
 
             game.PickCard(player3);
@@ -52,7 +54,8 @@ namespace testForServer {
             Console.WriteLine("Winner :");
             game.Winner.displayCards();
 
-            Console.ReadLine();
+            Console.Read();
+            //Console.ReadLine();
         }
         /// <summary>
         /// The main entry point for the application.
@@ -73,12 +76,10 @@ namespace testForServer {
 
                 tServer.Start();
                 Thread.Sleep( 100 );
-
-                
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
-                Thread.Sleep( 10 );
+                Thread.Sleep( 100 );
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
-                Thread.Sleep( 10 );
+                Thread.Sleep( 100 );
                 new Thread( () => Application.Run( new Interface.Form1() ) ).Start();
 
 

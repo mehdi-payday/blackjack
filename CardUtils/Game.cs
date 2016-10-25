@@ -103,7 +103,7 @@ namespace CardUtils {
         }
         public Player FindPlayer(uint playerId) {
             Player p = this.Players.Find((Player candidate) => candidate.ID == playerId);
-            Console.WriteLine("-----"+ p?.ID);
+            //Console.WriteLine("-----"+ p?.ID);
             if(p == null) {
                 //throw new GameException("Player whose id is '"+playerId+"' is not part of the game.");
             }
@@ -185,6 +185,7 @@ namespace CardUtils {
             } else {
                 // Give turn to the next player
                 index++;
+                Console.WriteLine( "current index now : " + index );
                 this.PlayingPlayer = this.Players[index];
             }
 
@@ -199,8 +200,8 @@ namespace CardUtils {
 
             players_arr.Sort(delegate (Player p1, Player p2) {
                 if (p1.Points != p2.Points) {
-                    int p1_points = p1.Points > 21 ? p1.Points : -1;
-                    int p2_points = p2.Points > 21 ? p2.Points : -1;
+                    int p1_points = p1.Points > 21 ? -1 : p1.Points;
+                    int p2_points = p2.Points > 21 ? -1 : p2.Points;
                     
                     return p2_points - p1_points;
                 }

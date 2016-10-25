@@ -15,7 +15,7 @@ namespace ServerClient.Server {
     public class Server {
         private Socket listener;
         private Dictionary<TcpClient, List<NETMSG>> clients;
-
+        private const string SERVER_TAG = "[SERVER]";
         private CardUtils.Game game;
 
         #region contructors
@@ -42,7 +42,7 @@ namespace ServerClient.Server {
 
             try {
                 l.Start();
-                Console.WriteLine( "SERVER LISTENING" );
+                printl( "listening" );
                 List<Thread> threads = new List<Thread>();
 
 
@@ -50,7 +50,7 @@ namespace ServerClient.Server {
                 while (i < 4) {
                     //TODO, move clients to new THREADs
                     TcpClient client = l.AcceptTcpClient();
-                    Console.WriteLine( "accepted" );
+                    printl( "client connection accepted." );
                     //thread or no thread
                     Thread clientThread = new Thread( () => handleNewClient( client ) );
                     threads.Add( clientThread );
@@ -60,15 +60,18 @@ namespace ServerClient.Server {
                     i++;
 
                 }
-                Console.WriteLine( "ded" );
-                Thread.Sleep( 1000 );
-                Console.WriteLine( "sending disconnect" );
+                while (!game.Finished) {
+                    Thread.Sleep( 1000 );
+                }
+                printl( "Game ended. broadcasting disconnection messages" );
+                
                 FullBroadCast( new NETMSG( NETMSG.MSG_TYPES.SERVER_CLOSING, null ) );
                 Thread.Sleep( 5000 );
                 listener.Close();
 
             } catch (SocketException ex) {
-                MessageBox.Show( "une erreur est survenue lors de la creation du serveur: " + ex.Message );
+                MessageBox.Show( "[FATAL] une erreur est survenue lors de la creation du serveur: " + ex.Message );
+                Application.Exit();
             }
 
             
@@ -78,13 +81,13 @@ namespace ServerClient.Server {
 
         private void handleNewClient(TcpClient client) {
             try {
-                Console.WriteLine( "new client!" );
+                printl( "new client: "+ client.GetHashCode() );
                 clients.Add( client, new List<NETMSG>() );
                 BufferedStream ns = new BufferedStream( client.GetStream() );
                 BinaryFormatter bf = new BinaryFormatter();
 
                 //innitial sync
-                SendClient(client, new NETMSG( NETMSG.MSG_TYPES.SERVER_OK, null, "welcome" ) );
+                SendClient(client, new NETMSG( NETMSG.MSG_TYPES.SERVER_OK, null, "welcome, " + client.GetHashCode() ) );
                 NETMSG r = ReceiveClient(client);
 
                 if (NETMSG.MSG_TYPES.CLIENT_OK.Equals( r.Type )) {
@@ -107,7 +110,7 @@ namespace ServerClient.Server {
                 }
 
             } catch (Exception e) {
-                Console.WriteLine( e.Message + "\n" + e.StackTrace );
+                printl( e.Message + "\n" + e.StackTrace );
             }
 
         }
@@ -115,7 +118,7 @@ namespace ServerClient.Server {
         private void handleClientMainLoop(TcpClient client) {
             NETMSG defaultMSG = new NETMSG( NETMSG.MSG_TYPES.SERVER_OK, null );
             NETMSG toSend;
-            Console.WriteLine( "entering main loop for client " + client );
+            printl( "entering main handler loop for client : " + client.GetHashCode() );
 
             while (client.Connected && clients.ContainsKey(client)) {
                 NETMSG m = ReceiveClient( client );
@@ -217,7 +220,7 @@ namespace ServerClient.Server {
                     break;
                 case NETMSG.MSG_TYPES.CLIENT_DISCONNECT:
                     this.clients.Remove( client );
-                    Console.WriteLine( "client disconnected" );
+                    printl( "client disconnected" );
                     game.Disconnect( (uint)NETMSG.bytesToObj(msg.Payload));
                     FullBroadCast( new NETMSG(NETMSG.MSG_TYPES.PLAYER_DISCONNECTED, msg.Payload ) );
                     break;
@@ -232,19 +235,24 @@ namespace ServerClient.Server {
                     game.AddPlayer(p);
 
                     if(game.Players.Count == 1) {
-                        Console.WriteLine( "p is playing " + p.ID );
+                        printl( p.ID + " is the first so he starts." );
                         game.PlayingPlayer = game.Players[0];
+                        clients[client].Add( new NETMSG( NETMSG.MSG_TYPES.PLAYER_YOURTURN, null ) );
+
                     }
                     SendClient( client, new NETMSG(NETMSG.MSG_TYPES.SERVER_PLAYER_UID, objToBytes( p ) ) );
+                    
                     FullBroadCast( new NETMSG( NETMSG.MSG_TYPES.PLAYER_CONNECTED, objToBytes( p ) ) );
-
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
-                    game.Pass( (uint)NETMSG.bytesToObj( msg.Payload ) );
+                    uint passingID = (uint)NETMSG.bytesToObj( msg.Payload );
+                    printl( passingID + " passed." );
+                    game.Pass( passingID );
                     FullBroadCast( msg );
+
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
-                    Console.WriteLine("player picked: "+ (uint) NETMSG.bytesToObj(msg.Payload));
+                    printl( "player picked: "+ (uint) NETMSG.bytesToObj(msg.Payload));
                     uint pid = (uint)NETMSG.bytesToObj(msg.Payload);
                     CardUtils.Card picked = game.PickCard(pid);
 
@@ -272,7 +280,9 @@ namespace ServerClient.Server {
 
         }
 
-
+        private void printl(String s ) {
+            Console.WriteLine(SERVER_TAG + ">> " + s);
+        }
 
         public void SetGame(CardUtils.Game game ) {
             this.game = game;
