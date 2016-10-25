@@ -13,6 +13,7 @@ using System.Windows.Forms;
 
 namespace ServerClient.Client {
     public class Client {
+        private string CLIENT_TAG;
         private IPAddress serverAddress = IPAddress.Parse( "127.0.0.1" );
         private int serverPort = 25565;
         private IPEndPoint serverEndPoint;
@@ -21,6 +22,7 @@ namespace ServerClient.Client {
         private NETMSG toSend;
         private bool exitRequested;
         private Interface.Form1 ui;
+        private bool isPlaying;
 
         public BinaryFormatter Bf;
         public CardUtils.Game Game;
@@ -28,7 +30,24 @@ namespace ServerClient.Client {
         public List<NETMSG> sendStack;
         public uint playerID;
         public Action RefreshUI;
-
+        public Action StartPlaying;
+        public Action StopPlaying;
+        public bool IsPlaying {
+            get {
+                return this.isPlaying;
+            }
+            private set {
+                this.isPlaying = value;
+                if (value) {
+                    printl( "unlocking controls");
+                    StartPlaying();
+                }else {
+                    printl( "locking controls" );
+                    StopPlaying();
+                }
+                
+            }
+        }
         public bool ExitRequested{
             get {
                 return this.exitRequested;
@@ -43,7 +62,8 @@ namespace ServerClient.Client {
 
 
         #region contructors
-        public Client(Interface.Form1 ui) {    
+        public Client(Interface.Form1 ui) {
+            CLIENT_TAG = "[CLIENT*: "+ this.GetHashCode()+"]";
             serverEndPoint = new IPEndPoint( serverAddress, serverPort );
             Bf = new BinaryFormatter();
             exitRequested = false;
@@ -58,9 +78,8 @@ namespace ServerClient.Client {
 
 
         public void Start() {
-            Console.WriteLine( "CLIENT START" );
+            printl( "starting." );
             socket = new TcpClient();
-
             try {
                 socket.Connect( serverEndPoint );
                 Thread.Sleep( 100 );
@@ -81,7 +100,8 @@ namespace ServerClient.Client {
                     //given player uid
                     NETMSG uid_msg = receive();
                     processServerMessage( uid_msg );
-                    Console.WriteLine( "You are player #" + playerID );
+                    printl( "i am now player #" + playerID );
+                    CLIENT_TAG = "[CLIENT: "+playerID+"]" ;
 
 
                     if (this.Game != null) {
@@ -100,8 +120,8 @@ namespace ServerClient.Client {
                 }
 
             } catch (Exception e) {
-                Console.WriteLine( "ERROR >> " + e.Message );
-                Console.WriteLine( e.StackTrace );
+                printl( "ERROR >> " + e.Message );
+                printl( e.StackTrace );
                 ExitRequested = true;
             }
 
@@ -110,8 +130,9 @@ namespace ServerClient.Client {
 
 
         //MAIN LOGIC
-        public void MainLoop(/*Client c*/) {
-            Console.WriteLine( "CLIENT " + this + " entered MainLoop" );
+        public void MainLoop() {
+            printl( "i entered MainLoop." );
+            IsPlaying = false;
 
             while (!this.exitRequested && socket.Connected) {
                 //client sends first
@@ -182,15 +203,11 @@ namespace ServerClient.Client {
                 return msg;
 
             } catch(Exception e) {
-                Console.WriteLine( "Exception while receiving: " + e.Message + " at " + e.StackTrace);
+                printl( "Exception while receiving: " + e.Message + " at " + e.StackTrace);
                 return new NETMSG( NETMSG.MSG_TYPES.SERVER_ERROR, objToBytes( e ), e.Message);
 
             }
 
-        }
-
-        private void receiveAndHandle() {
-            processServerMessage( receive() );
         }
 
         public void AddToSendQueue(NETMSG msg ) {
@@ -203,6 +220,7 @@ namespace ServerClient.Client {
             switch (msg.Type) {
                 case NETMSG.MSG_TYPES.SERVER_OK:
                     //this is a sync message
+                    
                     break;
                 case NETMSG.MSG_TYPES.SERVER_GAME:
                     this.Game = (CardUtils.Game)NETMSG.bytesToObj( msg.Payload );
@@ -229,16 +247,23 @@ namespace ServerClient.Client {
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_CONNECTED:
                     CardUtils.Player pla = (CardUtils.Player)NETMSG.bytesToObj( msg.Payload );
-                    Console.WriteLine( "new player!: " + pla.ID );
+                    if (Game.Players.Where(_player => _player.ID == pla.ID).Count() > 0) {
+                        printl( "... real funny, william, but player " + pla.ID + " seems to already be in the list..." );
+                        break;
+                    }
+                    printl( "adding a new player: " + pla.ID );
                     Game.AddPlayer( pla );
-                    Console.WriteLine( "total count:" + Game.Players.Count );
-                    foreach(CardUtils.Player p in Game.Players) {
-                        Console.WriteLine( "PL: " + p.ID );
-                    }
+                    //printl( playerID + " sees total count:" + Game.Players.Count );
                     if (Game.Players.Count == 1) {
-                        Console.WriteLine("player playing is "+ pla.ID);
+                        printl("i should now be the one playing. "+ pla.ID);
                         Game.PlayingPlayer = Game.Players[0];
+                    }else if(Game.Players.Count > 3){
+                        foreach(CardUtils.Player _p in Game.Players) {
+                            printl( "- " + _p.ID );
+                        }
                     }
+
+
                     //ui.RefreshView();
                     RefreshUI();
                     break;
@@ -249,8 +274,13 @@ namespace ServerClient.Client {
                     RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PASS:
-                    this.Game.Pass( (uint)NETMSG.bytesToObj( msg.Payload ) );
-                    //ui.RefreshView();
+                    uint passedID = (uint)NETMSG.bytesToObj( msg.Payload );
+                    this.Game.Pass( passedID );
+                    printl( passedID + "told me he passed, i think " + Game.PlayingPlayer.ID + " is now playing.");
+                    if(this.Game.PlayingPlayer.ID == this.playerID) {
+                        printl( "i will now be playing.");
+                        this.IsPlaying = true;
+                    }
                     RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
@@ -266,7 +296,8 @@ namespace ServerClient.Client {
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_YOURTURN:
                     //this.Game.PlayingPlayer = this.Game.FindPlayer( playerID );
-
+                    printl( "i will be the first player." );
+                    IsPlaying = true;
                     //ui.RefreshView();
                     RefreshUI();
                     break;
@@ -290,6 +321,9 @@ namespace ServerClient.Client {
             return null;
         }
 
+        private void printl(string s ) {
+            Console.WriteLine( CLIENT_TAG + ">> " + s);
+        }
 
         public void HitMe() {
             AddToSendQueue( new NETMSG( NETMSG.MSG_TYPES.PLAYER_PICKS, objToBytes(playerID) ) );

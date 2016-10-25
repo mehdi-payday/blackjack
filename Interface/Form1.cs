@@ -14,14 +14,14 @@ namespace Interface
          private CardUtils.Player player2;
          private CardUtils.Player player3;*/
         ServerClient.Client.Client client;
-        private Handler h;
 
         public Form1()
         {
-
+            
             //InitializeComponent();
             CreateHandle();
-          
+
+
             //this.game = new CardUtils.Game();
             /*
             this.player1 = new CardUtils.Player("Jeremy", this.game.generatePlayerId());
@@ -37,6 +37,8 @@ namespace Interface
                     this.RefreshView();
                 } );
             } );
+            client.StartPlaying = StartPlaying;
+            client.StopPlaying = StopPlaying;
             client.Start();
             
 
@@ -44,6 +46,7 @@ namespace Interface
 
         public void init() {
             InitializeComponent();
+            Text = client.playerID + "";
         }
 
         public void BtnHitMe_Click(object sender, EventArgs e) {
@@ -93,6 +96,8 @@ namespace Interface
 
         public void BtnStand_Click(object sender, EventArgs e) {
             client.Stand();
+            Console.WriteLine( "IM PASSING: " + client.playerID );
+            StopPlaying();
             //this.btnHitMe.Enabled = false;
         }
 
@@ -106,18 +111,23 @@ namespace Interface
             float bet = float.Parse(textBox_Bet.Text);
             client.Bet(bet);
         }
-    }
-    public class Handler {
-        public Form1 f;
-        public List<Action> a = new List<Action>();
 
-        public void ExecNext() {
-            if (a.Count > 0) {
-                a[0].Invoke();
-                a.RemoveAt(0);
-            }
-
+        private void StopPlaying() {
+            this.Invoke( new Action( () => {
+                this.btnHitMe.Enabled = false;
+                this.btnStand.Enabled = false;
+            } ) );
         }
+        private void StartPlaying() {
+            this.Invoke( new Action( () => {
+                this.btnHitMe.Enabled = true;
+                this.btnStand.Enabled = true;
+            } ) );
+            
+        }
+
+
     }
+    
 
 }

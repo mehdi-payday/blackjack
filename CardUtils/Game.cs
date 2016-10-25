@@ -103,7 +103,7 @@ namespace CardUtils {
         }
         public Player FindPlayer(uint playerId) {
             Player p = this.Players.Find((Player candidate) => candidate.ID == playerId);
-            Console.WriteLine("-----"+ p?.ID);
+            //Console.WriteLine("-----"+ p?.ID);
             if(p == null) {
                 //throw new GameException("Player whose id is '"+playerId+"' is not part of the game.");
             }
@@ -185,6 +185,7 @@ namespace CardUtils {
             } else {
                 // Give turn to the next player
                 index++;
+                Console.WriteLine( "current index now : " + index );
                 this.PlayingPlayer = this.Players[index];
             }
 
