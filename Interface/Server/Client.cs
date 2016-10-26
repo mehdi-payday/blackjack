@@ -282,12 +282,13 @@ namespace ServerClient.Client {
                         printl( "i will now be playing.");
                         this.IsPlaying = true;
                     }
-                    RefreshUI();
                     ShowWinner();
+                    RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
                     PICK pick = ((PICK)NETMSG.bytesToObj(msg.Payload));
                     this.Game.PickCard(pick.PlayerID, pick.Card);
+                    ShowWinner();
                     RefreshUI();
                     break;
 

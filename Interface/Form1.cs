@@ -56,7 +56,7 @@ namespace Interface
         public void showWinner() {
             CardUtils.Player actualPlayer = this.client.Game.FindPlayer(this.client.playerID);
             if (actualPlayer == this.client.Game.Winner) {
-                MessageBox.Show("You won!");
+                this.turnPictureBox.Image = (System.Drawing.Image)global::Interface.Properties.Resources._you_won;
             }
         }
 
