@@ -62,7 +62,7 @@ namespace testForServer {
         /// </summary>
         [STAThread]
         static void Main() {
-            tests();
+            //tests();
 
             try {
                 ServerClient.Server.Server server = new ServerClient.Server.Server();

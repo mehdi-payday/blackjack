@@ -233,6 +233,7 @@ namespace CardUtils {
             Card picked = this.deck.Pick();
 
             this.FindPlayer(playerId).assignCard(picked);
+            
 
             return picked;
         }

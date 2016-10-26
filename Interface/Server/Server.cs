@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-
+using Interface.Server;
 
 namespace ServerClient.Server {
     public class Server {
@@ -17,6 +17,7 @@ namespace ServerClient.Server {
         private Dictionary<TcpClient, List<NETMSG>> clients;
         private const string SERVER_TAG = "[SERVER]";
         private CardUtils.Game game;
+        private ServerUI ui;
 
         #region contructors
         public Server() {
@@ -38,7 +39,10 @@ namespace ServerClient.Server {
             IPAddress addr = IPAddress.Parse( host );
             listener = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
             TcpListener l = new TcpListener( addr, port );
-
+            new Thread( () => {
+                ui = new ServerUI(this, host, port );
+                ui.ShowDialog();
+            } ).Start();
 
             try {
                 l.Start();
