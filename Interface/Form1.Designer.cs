@@ -6,7 +6,7 @@ namespace Interface
 {
     partial class Form1
     {
-        
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -56,10 +56,12 @@ namespace Interface
             this.btnBet = new System.Windows.Forms.Button();
             this.textBox_Bet = new System.Windows.Forms.TextBox();
             this.labelBet = new System.Windows.Forms.Label();
+            this.turnPictureBox = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.player2Status.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.turnPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // Player2Panel
@@ -95,7 +97,6 @@ namespace Interface
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(70, 48);
             this.panel1.TabIndex = 6;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // textBox_balance
             // 
@@ -117,6 +118,7 @@ namespace Interface
             // 
             // btnStand
             // 
+            this.btnStand.Enabled = false;
             this.btnStand.Location = new System.Drawing.Point(377, 673);
             this.btnStand.Name = "btnStand";
             this.btnStand.Size = new System.Drawing.Size(66, 25);
@@ -127,6 +129,7 @@ namespace Interface
             // 
             // btnHitMe
             // 
+            this.btnHitMe.Enabled = false;
             this.btnHitMe.Location = new System.Drawing.Point(318, 673);
             this.btnHitMe.Name = "btnHitMe";
             this.btnHitMe.Size = new System.Drawing.Size(53, 25);
@@ -290,12 +293,22 @@ namespace Interface
             this.labelBet.Text = "Your Bet :";
             this.labelBet.Click += new System.EventHandler(this.labelBet_Click);
             // 
+            // turnPictureBox
+            // 
+            this.turnPictureBox.Location = new System.Drawing.Point(37, 405);
+            this.turnPictureBox.Name = "turnPictureBox";
+            this.turnPictureBox.Size = new System.Drawing.Size(162, 245);
+            this.turnPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.turnPictureBox.TabIndex = 17;
+            this.turnPictureBox.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LimeGreen;
             this.ClientSize = new System.Drawing.Size(984, 706);
+            this.Controls.Add(this.turnPictureBox);
             this.Controls.Add(this.labelBet);
             this.Controls.Add(this.textBox_Bet);
             this.Controls.Add(this.btnBet);
@@ -322,128 +335,137 @@ namespace Interface
             this.groupBox1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.turnPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        public void NewGame() {
+        public void NewGame()
+        {
             this.Player1Panel.Controls.Clear();
             this.Player2Panel.Controls.Clear();
             this.Player3Panel.Controls.Clear();
-            this.currentPot.Text ="0";
-            this.btnHitMe.Enabled = true;
+            this.currentPot.Text = "0";
+            //this.btnHitMe.Enabled = true;
         }
-        public void DisplayPlayers(CardUtils.Player actualPlayer, CardUtils.Player player2, CardUtils.Player player3, bool gameFinished = false) {
-            if (actualPlayer != null) {
+        public void DisplayPlayers(CardUtils.Player actualPlayer, CardUtils.Player player2, CardUtils.Player player3, bool gameFinished = false)
+        {
+            if (actualPlayer != null)
+            {
                 this.ShowPlayerCards(actualPlayer, this.Player1Panel, this.client.Game.isPlaying(actualPlayer), null, null, gameFinished);
                 this.DisplayActualPlayer(actualPlayer);
             }
             if (player2 != null)
                 this.ShowPlayerCards(player2, this.Player2Panel, this.client.Game.isPlaying(player2), this.radioButton1, this.radioButton2, gameFinished);
-            if(player3 != null)
+            if (player3 != null)
                 this.ShowPlayerCards(player3, this.Player3Panel, this.client.Game.isPlaying(player3), this.radioButton3, this.radioButton4, gameFinished);
         }
-        public void DisplayActualPlayer(CardUtils.Player actualPlayer) {
-            textBox_balance.Invoke( (MethodInvoker) delegate {
+        public void DisplayActualPlayer(CardUtils.Player actualPlayer)
+        {
+            textBox_balance.Invoke((MethodInvoker)delegate {
                 this.textBox_balance.Text = "" + actualPlayer.Bourse;
 
-            } );
+            });
 
-            btnHitMe.Invoke( (MethodInvoker)delegate {
-                this.btnHitMe.Enabled = this.client.Game.isPlaying(actualPlayer);
+            btnHitMe.Invoke((MethodInvoker)delegate {
+                //this.btnHitMe.Enabled = this.client.Game.isPlaying(actualPlayer);
 
-            } );
-            btnStand.Invoke( (MethodInvoker) delegate {
-                this.btnStand.Enabled = this.client.Game.isPlaying(actualPlayer);
+            });
+            btnStand.Invoke((MethodInvoker)delegate {
+                //this.btnStand.Enabled = this.client.Game.isPlaying(actualPlayer);
 
-            } );
+            });
         }
-        public void DisplayGameState() {
+        public void DisplayGameState()
+        {
             CardUtils.Game game = this.client.Game;
 
             float pot = game.Pot;
             bool finished = game.Finished;
 
             //this.currentPot.Text = "" + pot;
-            currentPot.Invoke( (MethodInvoker)delegate { currentPot.Text = "" + pot; } );
+            currentPot.Invoke((MethodInvoker)delegate { currentPot.Text = "" + pot; });
 
         }
 
         public void ShowPlayerCards(
                 CardUtils.Player player,
-                System.Windows.Forms.Panel playerPanel,
+                Panel playerPanel,
                 bool isPlaying = false,
-                System.Windows.Forms.RadioButton playingRadio=null,
-                System.Windows.Forms.RadioButton standingRadio=null,
-                bool gameFinished = false) {
+                RadioButton playingRadio = null,
+                RadioButton standingRadio = null,
+                bool gameFinished = false)
+        {
             List<CardUtils.Card> playerCards = player.Hand.getCards();
             int width = 65;
             int spacing = 5;
             int row = 11;
             int cardNb = 0; // when the number of cards is 4 we reset to 0 so we can start the new row
-//            playerPanel.Controls.Clear();
-            playerPanel.Invoke( (MethodInvoker)delegate {
+                            //            playerPanel.Controls.Clear();
+            playerPanel.Invoke((MethodInvoker)delegate {
                 playerPanel.Controls.Clear();
-            } );
+            });
 
 
             if (playingRadio != null)
-                playingRadio.Invoke((MethodInvoker) delegate {
+                playingRadio.Invoke((MethodInvoker)delegate {
                     playingRadio.Checked = isPlaying;
                 });
             if (standingRadio != null)
-                standingRadio.Invoke( (MethodInvoker)delegate {
+                standingRadio.Invoke((MethodInvoker)delegate {
                     standingRadio.Checked = !isPlaying;
                 });
 
-            
-            for (int i = 0; i < playerCards.Count; i++) {
+
+            for (int i = 0; i < playerCards.Count; i++)
+            {
                 if (i == 4) { row = 142; cardNb = 0; }
                 string cardImage = playerCards[i].ImagePath();
-                System.Windows.Forms.PictureBox aCard = new System.Windows.Forms.PictureBox();
+                PictureBox aCard = new PictureBox();
                 aCard.Size = new System.Drawing.Size(65, 125);
                 aCard.Location = new System.Drawing.Point((cardNb * width) + spacing, row);
-                aCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-                if (!gameFinished && !(this.client.playerID == player.ID)) {
+                aCard.SizeMode = PictureBoxSizeMode.StretchImage;
+                if (!gameFinished && !(this.client.playerID == player.ID))
+                {
                     cardImage = "_back";
                 }
                 aCard.Image = (System.Drawing.Image)global::Interface.Properties.Resources.ResourceManager.GetObject(cardImage + "");
 
                 //called from client thread, causing error
-                
-                playerPanel.Invoke(( MethodInvoker ) delegate { playerPanel.Controls.Add( aCard ); });
+
+                playerPanel.Invoke((MethodInvoker)delegate { playerPanel.Controls.Add(aCard); });
 
 
                 cardNb++;
 
             }
         }
-        
-        private System.Windows.Forms.Panel Player2Panel;
-        private System.Windows.Forms.Panel Player3Panel;
-        private System.Windows.Forms.Panel Player1Panel;
-        private System.Windows.Forms.Label label_Player2;
-        private System.Windows.Forms.Button btnStand;
-        private System.Windows.Forms.Button btnHitMe;
-        private System.Windows.Forms.Label label_Player1;
-        private System.Windows.Forms.Label label_Player3;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TextBox textBox_balance;
-        private System.Windows.Forms.Label label_balance;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.GroupBox player2Status;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton4;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.TextBox currentPot;
-        private System.Windows.Forms.Label label1;
-        private Button btnBet;
+
+        private Panel Player2Panel;
+        private Panel Player3Panel;
+        private Panel Player1Panel;
+        private Label label_Player2;
+        private Button btnStand;
+        private Button btnHitMe;
+        private Label label_Player1;
+        private Label label_Player3;
+        private Panel panel1;
+        private TextBox textBox_balance;
+        private Label label_balance;
+        private RadioButton radioButton1;
+        private RadioButton radioButton2;
+        private GroupBox player2Status;
+        private GroupBox groupBox1;
+        private RadioButton radioButton3;
+        private RadioButton radioButton4;
+        private Panel panel2;
+        private TextBox currentPot;
+        private Label label1; private Button btnBet;
         private TextBox textBox_Bet;
         private Label labelBet;
+        private PictureBox turnPictureBox;
     }
 }
 

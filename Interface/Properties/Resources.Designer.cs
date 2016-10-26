@@ -589,5 +589,15 @@ namespace Interface.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap _yourTurn {
+            get {
+                object obj = ResourceManager.GetObject("_yourTurn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

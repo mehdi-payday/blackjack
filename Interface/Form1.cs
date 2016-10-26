@@ -37,6 +37,11 @@ namespace Interface
                     this.RefreshView();
                 } );
             } );
+            client.ShowWinner = new Action(() => {
+                this.Invoke((MethodInvoker)delegate {
+                    this.showWinner();
+                });
+            });
             client.StartPlaying = StartPlaying;
             client.StopPlaying = StopPlaying;
             client.Start();
@@ -48,24 +53,25 @@ namespace Interface
             InitializeComponent();
             Text = client.playerID + "";
         }
+        public void showWinner() {
+            CardUtils.Player actualPlayer = this.client.Game.FindPlayer(this.client.playerID);
+            if (actualPlayer == this.client.Game.Winner) {
+                MessageBox.Show("You won!");
+            }
+        }
 
         public void BtnHitMe_Click(object sender, EventArgs e) {
             // Button Hit Me Click
-
-            client.HitMe();
-
-            CardUtils.Deck hand  = new CardUtils.Deck();
-            CardUtils.Card card1 = new CardUtils.Card(2, CardUtils.Card.Suits.SPADES);
-            CardUtils.Card card2 = new CardUtils.Card(2, CardUtils.Card.Suits.HEARTS);
-
-            hand.Add(card1);
-            hand.Add(card2);
-
-            //this.refreshHands(hand);
-            //CardUtils.Player player1 = new CardUtils.Player("mehdi", 1);
-            //player1.assignCard(card1);
-            //player1.assignCard(card2);
-
+            CardUtils.Player actualPlayer = this.client.Game.FindPlayer(this.client.playerID);
+            if (actualPlayer.Points > 21)
+            {
+                StopPlaying();
+                MessageBox.Show("GAME OVER! You busted, you have more than 21 pts.");
+                this.client.Stand();
+            }
+            else {
+                client.HitMe();
+            }
         }
 
         public void RefreshView() {
@@ -98,35 +104,36 @@ namespace Interface
             client.Stand();
             Console.WriteLine( "IM PASSING: " + client.playerID );
             StopPlaying();
-            //this.btnHitMe.Enabled = false;
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e) {
-
-        }
 
         private void btnBet_Click(object sender, EventArgs e)
         {
-            this.btnBet.Enabled = false;
-            
             float bet = float.Parse(textBox_Bet.Text);
             this.textBox_Bet.Text = "";
-
-            client.Bet(bet);
+            CardUtils.Player actualPlayer = this.client.Game.FindPlayer(this.client.playerID);
+            if (actualPlayer.Bourse >= bet) {
+                client.Bet(bet);
+                this.btnBet.Enabled = false;
+            }
+            else{
+                System.Windows.Forms.MessageBox.Show("You're bet exceeds your balance!");
+            }
         }
 
         private void StopPlaying() {
             this.Invoke( new Action( () => {
                 this.btnHitMe.Enabled = false;
                 this.btnStand.Enabled = false;
+                this.turnPictureBox.Image = null;
             } ) );
         }
         private void StartPlaying() {
             this.Invoke( new Action( () => {
                 this.btnHitMe.Enabled = true;
                 this.btnStand.Enabled = true;
-            } ) );
-            
+                this.turnPictureBox.Image = (System.Drawing.Image)global::Interface.Properties.Resources._yourTurn;
+            } ) );            
         }
 
         private void Form1_Load(object sender, EventArgs e) {

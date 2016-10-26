@@ -32,6 +32,7 @@ namespace ServerClient.Client {
         public Action RefreshUI;
         public Action StartPlaying;
         public Action StopPlaying;
+        public Action ShowWinner;
         public bool IsPlaying {
             get {
                 return this.isPlaying;
@@ -282,6 +283,7 @@ namespace ServerClient.Client {
                         this.IsPlaying = true;
                     }
                     RefreshUI();
+                    ShowWinner();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_PICKS:
                     PICK pick = ((PICK)NETMSG.bytesToObj(msg.Payload));
@@ -291,7 +293,7 @@ namespace ServerClient.Client {
 
                 case NETMSG.MSG_TYPES.END_GAME:
                     //say who won
-                    //ui.RefreshView();
+                    //ui.RefreshView
                     RefreshUI();
                     break;
                 case NETMSG.MSG_TYPES.PLAYER_YOURTURN:

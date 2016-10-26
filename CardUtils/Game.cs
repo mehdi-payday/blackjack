@@ -211,7 +211,7 @@ namespace CardUtils {
             });
 
             Console.WriteLine("Players number : " + players_arr.Count);
-
+            players_arr[0].Bourse += Pot;
             this.Winner = players_arr[0];
         } 
         public void Pass(Player player) {

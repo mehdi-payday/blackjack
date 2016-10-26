@@ -40,7 +40,7 @@ namespace CardUtils {
             get; private set;
         }
         public float Bourse {
-            get; private set;
+            get; set;
         }
 
         public Player(String name, uint ID) {
